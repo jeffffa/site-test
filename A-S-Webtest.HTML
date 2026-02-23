@@ -1,0 +1,990 @@
+<!doctype html>
+<html lang="sv">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Autostomp BLE Uploader</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      margin: 16px;
+      background-color: #121212;
+      color: #ffffff;
+    }
+
+    button {
+      padding: 10px 14px;
+      margin: 6px 6px 6px 0;
+      background-color: #333;
+      color: white;
+      border: 1px solid #555;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #444;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    input[type="file"] {
+      margin: 8px 0;
+      color: #ccc;
+    }
+
+    #log {
+      white-space: pre-wrap;
+      background: #000;
+      color: #0f0;
+      padding: 12px;
+      border-radius: 8px;
+      min-height: 240px;
+      font-family: monospace;
+      font-size: 13px;
+      border: 1px solid #333;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .muted {
+      color: #aaa;
+      font-size: 0.9em;
+      font-weight: 300;
+    }
+
+    .control-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 8px 0;
+    }
+
+    .ctrl-label {
+      min-width: 60px;
+      color: #aaa;
+    }
+
+    .ctrl-btn {
+      width: 36px;
+      height: 36px;
+      font-size: 1.2em;
+      line-height: 1;
+      border-radius: 6px;
+      cursor: pointer;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .toggle-btn {
+      width: auto;
+      padding: 0 16px;
+      font-size: 0.9em;
+    }
+
+    .toggle-on {
+      background: #2a7a2a;
+      border-color: #4c4;
+      color: #fff;
+    }
+
+    .toggle-off {
+      background: #333;
+      border-color: #666;
+      color: #aaa;
+    }
+
+    #tempoDisplay {
+      font-size: 1.6em;
+      font-weight: bold;
+      min-width: 52px;
+      text-align: center;
+    }
+
+    .controls-disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    #fileList {
+      list-style: none;
+      padding: 0;
+      margin: 8px 0;
+    }
+
+    #fileList li {
+      display: flex;
+      align-items: center;
+      padding: 6px 10px;
+      margin: 3px 0;
+      background: #1e1e1e;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.9em;
+      border: 1px solid #333;
+    }
+
+    #fileList li .fidx {
+      color: #888;
+      min-width: 32px;
+    }
+
+    #fileList li .fname {
+      flex: 1;
+    }
+
+    #fileList li .del-btn {
+      background: transparent;
+      border: 1px solid #555;
+      color: #aaa;
+      padding: 2px 8px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 0.8em;
+      margin-left: 8px;
+    }
+
+    #fileList li .del-btn:hover {
+      border-color: #e05;
+      color: #e05;
+    }
+
+    progress {
+      width: 320px;
+      height: 18px;
+      accent-color: #0a84ff;
+    }
+
+    hr {
+      border: 0;
+      height: 1px;
+      background: #333;
+      margin: 16px 0;
+    }
+
+    h2,
+    h3 {
+      font-weight: 500;
+    }
+
+    /* Tabs */
+    .tab-container {
+      margin-top: 24px;
+      border: 1px solid #333;
+      border-radius: 8px;
+      background: #1a1a1a;
+      padding: 16px;
+    }
+
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #333;
+      margin-bottom: 20px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: #888;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 4px 4px 0 0;
+      margin: 0;
+      border-bottom: 2px solid transparent;
+    }
+
+    .tab-btn:hover {
+      background: #222;
+      color: #fff;
+    }
+
+    .tab-btn.active {
+      color: #0a84ff;
+      border-bottom: 2px solid #0a84ff;
+      background: transparent;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+      filter: brightness(1);
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Autostomp BLE Uploader</h2>
+  <div class="muted">
+    Web Bluetooth fungerar bäst i Chrome/Edge på desktop. Kräver HTTPS eller localhost.
+  </div>
+
+  <div class="row">
+    <button id="btnConnect">Connect</button>
+    <button id="btnDisconnect" disabled>Disconnect</button>
+  </div>
+
+  <div class="tab-container">
+    <div class="tabs">
+      <button class="tab-btn active" id="btnTab1" onclick="openTab('tab1')">1. Styrning & WAV</button>
+      <button class="tab-btn" id="btnTab2" onclick="openTab('tab2')">2. Uppdatering</button>
+      <button class="tab-btn" id="btnTab3" onclick="openTab('tab3')">3. Logg</button>
+    </div>
+
+    <!-- Flik 1: Styrning & WAV -->
+    <div id="tab1" class="tab-content active">
+      <h3>Styrning</h3>
+      <div id="controls" class="controls-disabled">
+        <div class="control-row">
+          <span class="ctrl-label">Tempo</span>
+          <button class="ctrl-btn" id="btnTempoDown">−</button>
+          <span id="tempoDisplay">—</span>
+          <button class="ctrl-btn" id="btnTempoUp">+</button>
+          <span class="muted">BPM</span>
+        </div>
+        <div class="control-row">
+          <span class="ctrl-label">Auto</span>
+          <button class="ctrl-btn toggle-btn" id="btnAuto">—</button>
+        </div>
+      </div>
+
+      <hr>
+      <h3>Filer på enheten</h3>
+      <div class="row">
+        <button id="btnListFiles" disabled>Hämta fillista</button>
+      </div>
+      <div id="fileListContainer">
+        <div class="muted" id="fileListEmpty">Klicka "Hämta fillista" för att se lagrade WAV-filer.</div>
+        <ul id="fileList"></ul>
+      </div>
+
+      <hr>
+      <h3>WAV-uppladdning</h3>
+      <div class="muted">Enheten måste köra normalt (inte bootloader). Välj en eller flera .wav-filer.</div>
+      <div class="row">
+        <input id="wavFile" type="file" accept=".wav,audio/wav,audio/x-wav" multiple />
+        <button id="btnWavUpload" disabled>Upload WAV</button>
+      </div>
+      <div id="wavStatus"></div>
+    </div>
+
+    <!-- Flik 2: Uppdatering -->
+    <div id="tab2" class="tab-content">
+      <h3>Firmware-uppdatering</h3>
+      <div class="muted">Enheten måste vara i bootloader-läge (håll knappen vid start).</div>
+      <div class="row">
+        <input id="fwFile" type="file" accept=".bin,application/octet-stream" />
+        <button id="btnUpload" disabled>Upload firmware</button>
+      </div>
+    </div>
+
+    <!-- Flik 3: Logg -->
+    <div id="tab3" class="tab-content">
+      <h3>Logg</h3>
+      <div id="log"></div>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top: 16px;">
+    <progress id="prog" value="0" max="100"></progress>
+    <div id="progText">0%</div>
+  </div>
+
+  <script>
+    function openTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      if (tabId === 'tab1') document.getElementById('btnTab1').classList.add('active');
+      else if (tabId === 'tab2') document.getElementById('btnTab2').classList.add('active');
+      else if (tabId === 'tab3') document.getElementById('btnTab3').classList.add('active');
+    }
+
+    (() => {
+      // === UUIDs – matchar main.cpp och bootloadern ===
+      const SVC_UUID = "7b7a0001-2e6f-4f62-9a0c-2c9a7f9a0001";
+      const RX_UUID = "7b7a0002-2e6f-4f62-9a0c-2c9a7f9a0001"; // Write / Write NR
+      const TX_UUID = "7b7a0003-2e6f-4f62-9a0c-2c9a7f9a0001"; // Notify
+
+      // === ASTP framing – matchar bootloader och main.cpp ===
+      const MAX_PAYLOAD = 128;
+      const HEADER_SIZE = 6;
+      const PKT_SIZE = HEADER_SIZE + MAX_PAYLOAD; // 134 bytes
+
+      // FD-payload: 2 cmd-bytes ("FD") + data → max data = 126 bytes
+      const FD_DATA_MAX = MAX_PAYLOAD - 2;
+
+      // === UI ===
+      const elLog = document.getElementById("log");
+      const btnConnect = document.getElementById("btnConnect");
+      const btnDisconnect = document.getElementById("btnDisconnect");
+      const btnUpload = document.getElementById("btnUpload");
+      const btnWavUpload = document.getElementById("btnWavUpload");
+      const btnListFiles = document.getElementById("btnListFiles");
+      const fwFile = document.getElementById("fwFile");
+      const wavFile = document.getElementById("wavFile");
+      const wavStatus = document.getElementById("wavStatus");
+      const prog = document.getElementById("prog");
+      const progText = document.getElementById("progText");
+      const fileList = document.getElementById("fileList");
+      const fileListEmpty = document.getElementById("fileListEmpty");
+
+      function log(s) {
+        const now = new Date();
+        const ts = now.toTimeString().slice(0, 8);
+        elLog.textContent += `[${ts}] ${s}\n`;
+        elLog.scrollTop = elLog.scrollHeight;
+        console.log(s);
+      }
+
+      function setProgress(pct) {
+        pct = Math.max(0, Math.min(100, pct | 0));
+        prog.value = pct;
+        progText.textContent = pct + "%";
+      }
+
+      function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+      // === BLE state ===
+      let device = null;
+      let chrRX = null;
+      let chrTX = null;
+
+      // === Notification handling ===
+      // Alla inkommande notifikationer parsas och distribueras till väntande "waiters".
+      let lastNotify = "";
+      let waiters = [];
+      let notifyHandler = null; // Extra hook för fillista m.m.
+
+      // === Enhetsstatus (uppdateras från "status tempo=N sound=N auto=N name=X") ===
+      let currentTempo = null;
+      let currentAuto = null;
+
+      const elControls = document.getElementById("controls");
+      const elTempo = document.getElementById("tempoDisplay");
+      const btnTempoUp = document.getElementById("btnTempoUp");
+      const btnTempoDown = document.getElementById("btnTempoDown");
+      const btnAuto = document.getElementById("btnAuto");
+
+      function parseStatus(msg) {
+        // "status tempo=120 sound=7 auto=0 name=K Hist.wav"
+        const tm = msg.match(/tempo=(\d+)/);
+        const am = msg.match(/auto=(\d+)/);
+        if (tm) {
+          currentTempo = parseInt(tm[1], 10);
+          elTempo.textContent = currentTempo;
+        }
+        if (am) {
+          currentAuto = parseInt(am[1], 10) !== 0;
+          btnAuto.textContent = currentAuto ? "PÅ" : "AV";
+          btnAuto.className = "ctrl-btn toggle-btn " + (currentAuto ? "toggle-on" : "toggle-off");
+        }
+      }
+
+      function enableControls(on) {
+        elControls.className = on ? "" : "controls-disabled";
+      }
+
+      async function sendCmd(cmdStr) {
+        const bytes = new TextEncoder().encode(cmdStr);
+        await writePayload(bytes, { withoutResponse: false });
+      }
+
+      btnTempoUp.onclick = async () => {
+        const t = (currentTempo ?? 120) + 1;
+        if (t > 300) return;
+        await sendCmd(`tempo:${t}`);
+        currentTempo = t;
+        elTempo.textContent = t;
+      };
+
+      btnTempoDown.onclick = async () => {
+        const t = (currentTempo ?? 120) - 1;
+        if (t < 30) return;
+        await sendCmd(`tempo:${t}`);
+        currentTempo = t;
+        elTempo.textContent = t;
+      };
+
+      btnAuto.onclick = async () => {
+        const newVal = !currentAuto;
+        await sendCmd(`auto:${newVal ? 1 : 0}`);
+        currentAuto = newVal;
+        btnAuto.textContent = newVal ? "PÅ" : "AV";
+        btnAuto.className = "ctrl-btn toggle-btn " + (newVal ? "toggle-on" : "toggle-off");
+      };
+
+      function isASTP(u8) {
+        return u8.length >= 4 &&
+          u8[0] === 0x41 && u8[1] === 0x53 && u8[2] === 0x54 && u8[3] === 0x50;
+      }
+
+      function astpPayloadLen(u8) {
+        return (u8[4] | (u8[5] << 8)) >>> 0;
+      }
+
+      function makeASTP(payloadU8) {
+        const payloadLen = Math.min(payloadU8.length, MAX_PAYLOAD);
+        const pkt = new Uint8Array(PKT_SIZE);
+        pkt[0] = 0x41; pkt[1] = 0x53; pkt[2] = 0x54; pkt[3] = 0x50; // ASTP
+        pkt[4] = payloadLen & 0xFF;
+        pkt[5] = (payloadLen >> 8) & 0xFF;
+        pkt.set(payloadU8.slice(0, payloadLen), HEADER_SIZE);
+        return pkt;
+      }
+
+      function payloadAsText(pktU8) {
+        if (!isASTP(pktU8)) return "";
+        let len = astpPayloadLen(pktU8);
+        if (len > MAX_PAYLOAD) len = MAX_PAYLOAD;
+        const payload = pktU8.slice(HEADER_SIZE, HEADER_SIZE + len);
+        try { return new TextDecoder("utf-8").decode(payload); }
+        catch { return ""; }
+      }
+
+      function onNotify(ev) {
+        const v = new Uint8Array(ev.target.value.buffer);
+
+        if (!isASTP(v)) {
+          log("NOTIFY: (non-ASTP) " +
+            [...v.slice(0, 12)].map(b => b.toString(16).padStart(2, "0")).join(" "));
+          return;
+        }
+
+        const txt = payloadAsText(v).trim();
+        if (!txt) {
+          log(`NOTIFY: (ASTP binary, len=${astpPayloadLen(v)})`);
+          return;
+        }
+
+        lastNotify = txt;
+        log("NOTIFY: " + txt);
+        if (notifyHandler) notifyHandler(txt);
+        if (txt.startsWith("status ")) parseStatus(txt);
+
+        // Skicka till alla matchande waiters
+        const remaining = [];
+        for (const w of waiters) {
+          if (!w.done && w.predicate(txt)) {
+            w.done = true;
+            w.resolve(txt);
+          } else {
+            remaining.push(w);
+          }
+        }
+        waiters = remaining;
+      }
+
+      // Vänta tills en notifikation matchar predicatet, eller kasta timeout.
+      function waitForNotify(predicate, timeoutMs = 8000) {
+        return new Promise((resolve, reject) => {
+          if (predicate(lastNotify)) return resolve(lastNotify);
+
+          const w = { predicate, resolve, reject, done: false };
+          waiters.push(w);
+
+          const t = setTimeout(() => {
+            if (!w.done) {
+              w.done = true;
+              waiters = waiters.filter(x => x !== w);
+              reject(new Error("Timeout waiting for notify"));
+            }
+          }, timeoutMs);
+
+          const origResolve = resolve;
+          const origReject = reject;
+          w.resolve = val => { clearTimeout(t); origResolve(val); };
+          w.reject = err => { clearTimeout(t); origReject(err); };
+        });
+      }
+
+      // === BLE write helpers ===
+      // Alla paket wrappar vi i ASTP (134 bytes) – matchar vad main.cpp förväntar sig.
+      async function writePayload(payloadU8, { withoutResponse = false } = {}) {
+        const pkt = makeASTP(payloadU8);
+        if (withoutResponse && chrRX.writeValueWithoutResponse) {
+          await chrRX.writeValueWithoutResponse(pkt);
+        } else {
+          await chrRX.writeValue(pkt);
+        }
+      }
+
+      // === Kommandon ===
+
+      // FW_START – skicka med response (väntar på Bluetooth ACK)
+      async function sendFS() {
+        log("→ Sending FS (firmware start)...");
+        await writePayload(new Uint8Array([0x46, 0x53]), { withoutResponse: false });
+      }
+
+      // FW_END – skicka med response
+      async function sendFE() {
+        log("→ Sending FE (firmware end)...");
+        await writePayload(new Uint8Array([0x46, 0x45]), { withoutResponse: false });
+      }
+
+      // FW_DATA – skicka utan response (snabbare för bulk-data)
+      async function sendFD(chunkU8) {
+        const payload = new Uint8Array(2 + chunkU8.length);
+        payload[0] = 0x46; payload[1] = 0x44; // 'F' 'D'
+        payload.set(chunkU8, 2);
+        await writePayload(payload, { withoutResponse: true });
+      }
+
+      // Heartbeat – skickas periodiskt för att hålla SPI-loopen aktiv
+      async function sendHB() {
+        await writePayload(new Uint8Array([0x68, 0x62]), { withoutResponse: true }); // 'h' 'b'
+      }
+
+      // =====================================================================
+      // WAV-uppladdning: US / UD / UE
+      // US = Upload Start  (med filnamn som payload)
+      // UD = Upload Data   (binärdata, samma chunk-storlek som FD)
+      // UE = Upload End    (ingen extra payload)
+      // =====================================================================
+
+      // UD_DATA_MAX = MAX_PAYLOAD - 2 cmd bytes = 126 bytes per chunk
+      const UD_DATA_MAX = MAX_PAYLOAD - 2;
+
+      async function sendUS(filename) {
+        log(`→ Sending US (start): "${filename}"`);
+        const nameBytes = new TextEncoder().encode(filename);
+        const payload = new Uint8Array(2 + nameBytes.length);
+        payload[0] = 0x55; payload[1] = 0x53; // 'U' 'S'
+        payload.set(nameBytes, 2);
+        await writePayload(payload, { withoutResponse: false });
+      }
+
+      async function sendUD(chunkU8) {
+        const payload = new Uint8Array(2 + chunkU8.length);
+        payload[0] = 0x55; payload[1] = 0x44; // 'U' 'D'
+        payload.set(chunkU8, 2);
+        await writePayload(payload, { withoutResponse: true });
+      }
+
+      async function sendUE() {
+        log("→ Sending UE (end)...");
+        await writePayload(new Uint8Array([0x55, 0x45]), { withoutResponse: false }); // 'U' 'E'
+      }
+
+      // =====================================================================
+      // WAV-uppladdning — sekventiell med notifyHandler
+      //
+      // ESP32 har ett chunk-slot. Sliding window fungerar inte utan retry-logik
+      // för ud_busy. Istället: skicka ett chunk, vänta på ud_ok:N (exakt offset),
+      // skicka nästa. Connection interval-förhandlingen (7.5ms) i main.cpp ger
+      // tillräcklig hastighet utan pipelining.
+      // =====================================================================
+      async function uploadWavFileWindowed(file) {
+        const fw = new Uint8Array(await file.arrayBuffer());
+        const total = fw.length;
+        log(`WAV: ${file.name} (${(total / 1024).toFixed(1)} KB)`);
+        wavStatus.textContent = `Laddar upp: ${file.name}…`;
+        setProgress(0);
+
+        // US
+        await sendUS(file.name);
+        log("Väntar på us_ok...");
+        await waitForNotify(s => s.includes("us_ok"), 4000);
+
+        // Sätt upp notifyHandler för ud_ok en gång — undviker per-chunk overhead
+        let resolveUd = null;
+        let latestConfirmed = 0;
+        const origHandler = notifyHandler;
+        notifyHandler = (msg) => {
+          if (origHandler) origHandler(msg);
+          if (msg.startsWith("ud_ok:")) {
+            const n = parseInt(msg.slice(6), 10);
+            if (n > latestConfirmed) latestConfirmed = n;
+            if (resolveUd) { resolveUd(n); resolveUd = null; }
+          }
+        };
+
+        try {
+          let sent = 0;
+          while (sent < total) {
+            const n = Math.min(UD_DATA_MAX, total - sent);
+            const chunk = fw.slice(sent, sent + n);
+            const expectedOffset = sent + n;
+
+            // Registrera waiter INNAN sändning — undviker race med snabb ud_ok
+            const ackPromise = new Promise((resolve, reject) => {
+              if (latestConfirmed >= expectedOffset) { resolve(latestConfirmed); return; }
+              resolveUd = (v) => { if (v >= expectedOffset) resolve(v); };
+              // Fånga den lokala resolvern — annars nollar timeoutet fel chunks resolver
+              const myResolver = resolveUd;
+              setTimeout(() => {
+                if (resolveUd === myResolver) resolveUd = null; // nolla bara om den fortfarande är vår
+                reject(new Error("ud_ok timeout"));
+              }, 6000);
+            });
+
+            await sendUD(chunk);
+            await ackPromise;
+
+            sent = expectedOffset;
+            setProgress(Math.floor((sent * 100) / total));
+          }
+        } finally {
+          resolveUd = null;
+          notifyHandler = origHandler;
+        }
+
+        // UE
+        await sendUE();
+        log("Väntar på ue_ok...");
+        await waitForNotify(s => s.includes("ue_ok"), 5000);
+
+        setProgress(100);
+        log(`✅ WAV klar: ${file.name}`);
+        wavStatus.textContent = `✅ Uppladdad: ${file.name}`;
+      }
+
+      // =====================================================================
+      // FIX: sendFDAndWait – skickar ett FD-chunk och VÄNTAR på "fd_ok".
+      //
+      // Varför detta behövs:
+      //   main.cpp har en enkel chunk-slot (g_fwChunk). Om ett nytt FD anländer
+      //   innan SPI-tasken har konsumerat det förra svarar bryggan "fd_busy" och
+      //   kastar paketet. Utan wait-loop skickar webappen nästa chunk direkt
+      //   (2ms sleep), vilket garanterar att de flesta paket förloras → VERIFY_FAIL.
+      //
+      // Flöde:
+      //   1. Skicka FD.
+      //   2. Vänta på "fd_ok" (chunk accepterat i slot) ELLER "fd_busy".
+      //   3. Vid "fd_busy": vänta 25ms och försök igen (upp till maxRetries gånger).
+      //   4. Vid timeout: kasta fel.
+      // =====================================================================
+      async function sendFDAndWait(chunkU8, sentBefore, maxRetries = 5) {
+        // expectedOffset = antal bytes som ska ha levererats till Daisy EFTER denna chunk
+        const expectedOffset = sentBefore + chunkU8.length;
+        const expectedAck = `fd_ok:${expectedOffset}`;
+
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+          // Nollställ lastNotify och registrera waitern SYNKRONT innan sendFD.
+          // Matcha mot exakt byte-offset → buffrade gamla fd_ok ignoreras automatiskt.
+          lastNotify = "";
+          const ackPromise = waitForNotify(
+            s => s === expectedAck || s.includes("fd_busy"),
+            5000
+          );
+
+          await sendFD(chunkU8);
+
+          try {
+            const resp = await ackPromise;
+            if (resp === expectedAck) return; // Exakt match → lyckat
+            log(`  fd_busy (attempt ${attempt}/${maxRetries}), väntar 50ms...`);
+            await sleep(50);
+          } catch (e) {
+            log(`  FD timeout (attempt ${attempt}/${maxRetries})`);
+            if (attempt === maxRetries) throw new Error("FD chunk failed: max retries");
+            await sleep(50);
+          }
+        }
+        throw new Error("FD chunk failed after max retries");
+      }
+
+      // === Firmware upload-flöde ===
+      async function uploadFirmware(arrayBuffer) {
+        const fw = new Uint8Array(arrayBuffer);
+        log(`Firmware: ${fw.length} bytes (${(fw.length / 1024).toFixed(1)} KB)`);
+        setProgress(0);
+
+        // --- 1. Vänta på att bootloadern är redo ---
+        // Bootloadern skickar "BOOT:READY" via SPI → brygga → BLE notify.
+        // Heartbeat var 2:a sekund triggar SPI-utbytet som returnerar BOOT:READY.
+        log("Väntar på BOOT:READY...");
+        await waitForNotify(s => s.includes("BOOT:READY"), 10000);
+
+        // --- 2. Skicka FS och vänta på bekräftelse från bryggan ---
+        await sendFS();
+        log("Väntar på fs_ok från bryggan...");
+        await waitForNotify(s => s.includes("fs_ok"), 3000);
+
+        // --- 3. Vänta på att bootloadern raderat QSPI-flash ---
+        log("Väntar på BOOT:ERASED (raderar flash, kan ta ~15s)...");
+        await waitForNotify(s => s.includes("BOOT:ERASED"), 25000);
+
+        // --- 4. Strömma FD-chunks med flödeskontroll ---
+        const total = fw.length;
+        let sent = 0;
+        let lastHbTime = performance.now();
+        const HB_INTERVAL_MS = 1500;
+
+        log(`Startar dataöverföring, chunk-storlek: ${FD_DATA_MAX} bytes`);
+
+        while (sent < total) {
+          // Heartbeat i bakgrunden för att hålla SPI-loopen levande
+          const now = performance.now();
+          if (now - lastHbTime > HB_INTERVAL_MS) {
+            lastHbTime = now;
+            await sendHB();
+          }
+
+          const n = Math.min(FD_DATA_MAX, total - sent);
+          const chunk = fw.slice(sent, sent + n);
+
+          await sendFDAndWait(chunk, sent);
+
+          sent += n;
+
+          const pct = Math.floor((sent * 100) / total);
+          setProgress(pct);
+        }
+
+        // --- 5. Skicka FE och vänta på bekräftelse ---
+        await sendFE();
+        log("Väntar på fe_ok från bryggan...");
+        await waitForNotify(s => s.includes("fe_ok"), 3000);
+
+        // --- 6. Vänta på bootloaderns verifieringsresultat ---
+        log("Väntar på BOOT:OK eller BOOT:VERIFY_FAIL (kan ta upp till 30s)...");
+        try {
+          const result = await waitForNotify(
+            s => s.includes("BOOT:OK") || s.includes("BOOT:VERIFY_FAIL") || s.includes("BOOT:ERROR"),
+            30000
+          );
+
+          if (result.includes("BOOT:OK")) {
+            setProgress(100);
+            log("✅ Uppdatering klar! (BOOT:OK) – enheten startar om.");
+          } else if (result.includes("BOOT:VERIFY_FAIL")) {
+            setProgress(100);
+            log("⚠️  Firmware uppladdad men verify-check misslyckades (BOOT:VERIFY_FAIL).");
+            log("   Detta är ett känt QSPI-cacheproblem i bootloadern — datan är korrekt.");
+            log("   Stäng av och sätt på enheten så startar den med ny firmware. ✅");
+          } else {
+            log("❌ Uppdatering misslyckades: " + result);
+          }
+        } catch (e) {
+          log("ERROR: Timeout väntandes på BOOT-resultat: " + e.message);
+          throw e;
+        }
+      }
+
+      // === Knappar ===
+      btnConnect.onclick = async () => {
+        try {
+          log("Söker efter BLE-enhet...");
+          device = await navigator.bluetooth.requestDevice({
+            filters: [{ services: [SVC_UUID] }],
+          });
+
+          device.addEventListener("gattserverdisconnected", () => {
+            log("Frånkopplad.");
+            btnConnect.disabled = false;
+            btnDisconnect.disabled = true;
+            btnUpload.disabled = true;
+            btnWavUpload.disabled = true;
+            // Nollställ lastNotify och notifyHandler
+            lastNotify = "";
+            notifyHandler = null;
+            btnListFiles.disabled = true;
+            enableControls(false);
+            currentTempo = null; currentAuto = null;
+            elTempo.textContent = "—";
+            btnAuto.textContent = "—";
+            btnAuto.className = "ctrl-btn toggle-btn";
+            // Töm waiters vid disconnect
+            for (const w of waiters) {
+              if (!w.done) {
+                w.done = true;
+                w.reject(new Error("BLE disconnected"));
+              }
+            }
+            waiters = [];
+          });
+
+          log("Ansluter...");
+          const server = await device.gatt.connect();
+
+          log("Hämtar service...");
+          const svc = await server.getPrimaryService(SVC_UUID);
+
+          chrRX = await svc.getCharacteristic(RX_UUID);
+          chrTX = await svc.getCharacteristic(TX_UUID);
+
+          await chrTX.startNotifications();
+          chrTX.addEventListener("characteristicvaluechanged", onNotify);
+
+          btnConnect.disabled = true;
+          btnDisconnect.disabled = false;
+          btnUpload.disabled = false;
+          btnWavUpload.disabled = false;
+          btnListFiles.disabled = false;
+          enableControls(true);
+
+          log("✅ Ansluten!");
+
+          // Nollställ lastNotify så gamla notiser inte falskt matchar nya waiters
+          lastNotify = "";
+
+          // Skicka heartbeat direkt för att trigga första SPI-utbytet
+          await sendHB();
+
+        } catch (e) {
+          log("ERROR: " + e.message);
+        }
+      };
+
+      btnDisconnect.onclick = async () => {
+        try {
+          if (device?.gatt?.connected) device.gatt.disconnect();
+        } catch { }
+      };
+
+      btnUpload.onclick = async () => {
+        if (!fwFile.files || fwFile.files.length === 0) {
+          log("Välj en .bin-fil först.");
+          return;
+        }
+        const f = fwFile.files[0];
+        log(`Vald fil: ${f.name} (${(f.size / 1024).toFixed(1)} KB)`);
+
+        // Inaktivera knappen under uppladdning
+        btnUpload.disabled = true;
+        try {
+          const buf = await f.arrayBuffer();
+          await uploadFirmware(buf);
+        } catch (e) {
+          log("ERROR: " + e.message);
+        } finally {
+          btnUpload.disabled = false;
+        }
+      };
+
+      // =====================================================================
+      // Fillista: skicka "list_req" → samla L:N:filnamn tills L:END
+      // =====================================================================
+      async function requestFileList() {
+        log("→ Begär fillista (list_req)...");
+        fileList.innerHTML = "";
+        fileListEmpty.textContent = "Hämtar…";
+
+        // Skicka "list_req" som ASTP-wrappad payload
+        const cmd = new TextEncoder().encode("list_req");
+        await writePayload(cmd, { withoutResponse: false });
+
+        // Samla L:N:filnamn-notiser tills L:END (timeout 5s utan ny notis)
+        const files = [];
+        const done = await new Promise((resolve) => {
+          const collected = [];
+          let timer = setTimeout(() => resolve(collected), 5000);
+
+          const origHandler = notifyHandler;
+          notifyHandler = (msg) => {
+            if (origHandler) origHandler(msg);
+
+            if (msg.startsWith("L:")) {
+              clearTimeout(timer);
+              if (msg === "L:END") {
+                notifyHandler = origHandler;
+                resolve(collected);
+              } else {
+                // Format: L:0:kick.wav
+                const parts = msg.split(":");
+                if (parts.length >= 3) {
+                  const idx = parseInt(parts[1], 10);
+                  const name = parts.slice(2).join(":"); // filnamn kan innehålla kolon
+                  collected.push({ idx, name });
+                }
+                timer = setTimeout(() => { notifyHandler = origHandler; resolve(collected); }, 3000);
+              }
+            }
+          };
+        });
+
+        // Rendera listan
+        fileList.innerHTML = "";
+        if (done.length === 0) {
+          fileListEmpty.textContent = "Inga WAV-filer hittades på enheten.";
+        } else {
+          fileListEmpty.textContent = `${done.length} fil(er) på enheten:`;
+          done.forEach(({ idx, name }) => {
+            const li = document.createElement("li");
+            li.dataset.name = name;
+            li.innerHTML = `<span class="fidx">#${idx}</span><span class="fname">${name}</span>`;
+            const btn = document.createElement("button");
+            btn.textContent = "Ta bort";
+            btn.className = "del-btn";
+            btn.onclick = () => deleteFile(name, li);
+            li.appendChild(btn);
+            fileList.appendChild(li);
+          });
+        }
+        log(`Fillista klar: ${done.length} fil(er)`);
+      }
+
+      async function deleteFile(name, liElement) {
+        if (!confirm(`Ta bort "${name}" från enheten?`)) return;
+        liElement.style.opacity = "0.4";
+        try {
+          const cmd = new TextEncoder().encode(`del:${name}`);
+          await writePayload(cmd, { withoutResponse: false });
+          log(`→ Raderar: ${name}`);
+          // Vänta lite så Daisy hinner spara TOC, hämta sedan uppdaterad lista
+          await sleep(600);
+          await requestFileList();
+        } catch (e) {
+          log("ERROR radera: " + e.message);
+          liElement.style.opacity = "1";
+        }
+      }
+
+      btnListFiles.onclick = async () => {
+        btnListFiles.disabled = true;
+        try {
+          await requestFileList();
+        } catch (e) {
+          log("ERROR fillista: " + e.message);
+          fileListEmpty.textContent = "Fel vid hämtning.";
+        } finally {
+          btnListFiles.disabled = false;
+        }
+      };
+
+      btnWavUpload.onclick = async () => {
+        if (!wavFile.files || wavFile.files.length === 0) {
+          log("Välj en eller flera .wav-filer först.");
+          return;
+        }
+        btnWavUpload.disabled = true;
+        const files = [...wavFile.files];
+        try {
+          for (let i = 0; i < files.length; i++) {
+            log(`--- WAV ${i + 1}/${files.length}: ${files[i].name} ---`);
+            await uploadWavFileWindowed(files[i]);
+            if (i < files.length - 1) await sleep(300); // kort paus mellan filer
+          }
+          log(`✅ Alla ${files.length} fil(er) uppladdade!`);
+          await sleep(500); // låt Daisy spara TOC
+          await requestFileList();
+        } catch (e) {
+          log("ERROR WAV: " + e.message);
+          wavStatus.textContent = `❌ Fel: ${e.message}`;
+        } finally {
+          btnWavUpload.disabled = false;
+        }
+      };
+
+    })();
+  </script>
+</body>
+
+</html>

@@ -261,6 +261,7 @@
           <span class="ctrl-label">Auto</span>
           <button class="ctrl-btn toggle-btn" id="btnAuto">—</button>
         </div>
+
       </div>
 
       <hr>
@@ -381,6 +382,18 @@
       const btnTempoDown = document.getElementById("btnTempoDown");
       const btnAuto = document.getElementById("btnAuto");
 
+      // Skicka MIDI CC via BLE → ESP32 → SPI → Daisy
+      // Format: 'MI' + statusByte + cc + value
+      async function sendMidiCCviaBle(cc, value) {
+        const payload = new Uint8Array(5);
+        payload[0] = 0x4D; // 'M'
+        payload[1] = 0x49; // 'I'
+        payload[2] = 0xB0; // Control Change, ch 1
+        payload[3] = cc;
+        payload[4] = value;
+        await writePayload(payload, { withoutResponse: false });
+      }
+
       function parseStatus(msg) {
         // "status tempo=120 sound=7 auto=0 name=K Hist.wav"
         const tm = msg.match(/tempo=(\d+)/);
@@ -423,11 +436,14 @@
 
       btnAuto.onclick = async () => {
         const newVal = !currentAuto;
-        await sendCmd(`auto:${newVal ? 1 : 0}`);
+        const value = newVal ? 127 : 0;
+        await sendMidiCCviaBle(80, value);
+        log(`BLE→MI: CC80 ${newVal ? 'PÅ (127)' : 'AV (0)'} → ESP32→SPI→Daisy`);
         currentAuto = newVal;
         btnAuto.textContent = newVal ? "PÅ" : "AV";
         btnAuto.className = "ctrl-btn toggle-btn " + (newVal ? "toggle-on" : "toggle-off");
       };
+
 
       function isASTP(u8) {
         return u8.length >= 4 &&
@@ -473,7 +489,7 @@
         }
 
         lastNotify = txt;
-        log("NOTIFY: " + txt);
+        if (!txt.startsWith("hb_ok")) log("NOTIFY: " + txt);
         if (notifyHandler) notifyHandler(txt);
         if (txt.startsWith("status ")) parseStatus(txt);
 
@@ -611,7 +627,9 @@
           if (msg.startsWith("ud_ok:")) {
             const n = parseInt(msg.slice(6), 10);
             if (n > latestConfirmed) latestConfirmed = n;
-            if (resolveUd) { resolveUd(n); resolveUd = null; }
+            if (resolveUd) { resolveUd({ ok: true, v: n }); resolveUd = null; }
+          } else if (msg === "ud_busy") {
+            if (resolveUd) { resolveUd({ ok: false }); resolveUd = null; }
           }
         };
 
@@ -622,23 +640,31 @@
             const chunk = fw.slice(sent, sent + n);
             const expectedOffset = sent + n;
 
-            // Registrera waiter INNAN sändning — undviker race med snabb ud_ok
-            const ackPromise = new Promise((resolve, reject) => {
-              if (latestConfirmed >= expectedOffset) { resolve(latestConfirmed); return; }
-              resolveUd = (v) => { if (v >= expectedOffset) resolve(v); };
-              // Fånga den lokala resolvern — annars nollar timeoutet fel chunks resolver
-              const myResolver = resolveUd;
-              setTimeout(() => {
-                if (resolveUd === myResolver) resolveUd = null; // nolla bara om den fortfarande är vår
-                reject(new Error("ud_ok timeout"));
-              }, 6000);
-            });
+            let attempt = 0;
+            while (true) {
+              const ackPromise = new Promise((resolve, reject) => {
+                if (latestConfirmed >= expectedOffset) { resolve({ ok: true, v: latestConfirmed }); return; }
+                resolveUd = (r) => { resolve(r); };
+                const myResolver = resolveUd;
+                setTimeout(() => {
+                  if (resolveUd === myResolver) resolveUd = null;
+                  reject(new Error("ud_ok timeout"));
+                }, 6000);
+              });
 
-            await sendUD(chunk);
-            await ackPromise;
+              await sendUD(chunk);
+              const result = await ackPromise;
 
-            sent = expectedOffset;
-            setProgress(Math.floor((sent * 100) / total));
+              if (result.ok && result.v >= expectedOffset) {
+                sent = expectedOffset;
+                setProgress(Math.floor((sent * 100) / total));
+                break;
+              }
+              // ud_busy: SPI-slot inte tömt ännu, vänta 3ms och försök igen
+              attempt++;
+              if (attempt > 10) throw new Error("ud_busy: max retries");
+              await sleep(3);
+            }
           }
         } finally {
           resolveUd = null;

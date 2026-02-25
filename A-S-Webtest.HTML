@@ -265,7 +265,17 @@
       </div>
 
       <hr>
-      <h3>Filer på enheten</h3>
+      <h3>ESP-NOW Pedalboard</h3>
+      <div id="espnowControls" class="controls-disabled">
+        <div class="control-row">
+          <span class="ctrl-label">Peer MAC</span>
+          <input id="macInput" type="text" placeholder="AA:BB:CC:DD:EE:FF"
+            style="background:#222;color:#ccc;border:1px solid #555;padding:6px 10px;border-radius:4px;font-family:monospace;width:180px;">
+          <button id="btnSetMac">Spara</button>
+          <button id="btnGetMac">Hämta</button>
+        </div>
+        <div class="muted" id="macStatus">Ingen MAC konfigurerad.</div>
+      </div>
       <div class="row">
         <button id="btnListFiles" disabled>Hämta fillista</button>
       </div>
@@ -377,21 +387,28 @@
       let currentAuto = null;
 
       const elControls = document.getElementById("controls");
+      const elEspnow = document.getElementById("espnowControls");
       const elTempo = document.getElementById("tempoDisplay");
       const btnTempoUp = document.getElementById("btnTempoUp");
       const btnTempoDown = document.getElementById("btnTempoDown");
       const btnAuto = document.getElementById("btnAuto");
+      const macInput = document.getElementById("macInput");
+      const btnSetMac = document.getElementById("btnSetMac");
+      const btnGetMac = document.getElementById("btnGetMac");
+      const macStatus = document.getElementById("macStatus");
 
-      // Skicka MIDI CC via BLE → ESP32 → SPI → Daisy
-      // Format: 'MI' + statusByte + cc + value
-      async function sendMidiCCviaBle(cc, value) {
-        const payload = new Uint8Array(5);
-        payload[0] = 0x4D; // 'M'
-        payload[1] = 0x49; // 'I'
-        payload[2] = 0xB0; // Control Change, ch 1
-        payload[3] = cc;
-        payload[4] = value;
+      // Skicka rå MIDI via BLE → ESP32 → SPI → Daisy
+      // Statusbyte ≥ 0x80 — Daisy auto-detekterar som MIDI
+      async function sendMidi(statusByte, data1, data2) {
+        const payload = new Uint8Array(data2 !== undefined ? 3 : 2);
+        payload[0] = statusByte;
+        payload[1] = data1;
+        if (data2 !== undefined) payload[2] = data2;
         await writePayload(payload, { withoutResponse: false });
+      }
+
+      async function sendMidiCC(channel, cc, value) {
+        await sendMidi(0xB0 | (channel & 0x0F), cc, value);
       }
 
       function parseStatus(msg) {
@@ -411,7 +428,32 @@
 
       function enableControls(on) {
         elControls.className = on ? "" : "controls-disabled";
+        elEspnow.className = on ? "" : "controls-disabled";
       }
+
+      btnSetMac.onclick = async () => {
+        const mac = macInput.value.trim().toUpperCase();
+        if (!/^([0-9A-F]{2}:){5}[0-9A-F]{2}$/.test(mac)) {
+          macStatus.textContent = "❌ Ogiltigt format. Använd AA:BB:CC:DD:EE:FF";
+          return;
+        }
+        await sendCmd(`set_mac:${mac}`);
+        const resp = await waitForNotify(s => s === "mac_ok" || s === "mac_err", 3000);
+        macStatus.textContent = resp === "mac_ok" ? `✅ Sparad: ${mac}` : "❌ Fel vid sparning";
+      };
+
+      btnGetMac.onclick = async () => {
+        await sendCmd("get_mac");
+        const resp = await waitForNotify(s => s.startsWith("mac:"), 3000);
+        const addr = resp.slice(4);
+        if (addr === "none") {
+          macStatus.textContent = "Ingen MAC konfigurerad.";
+          macInput.value = "";
+        } else {
+          macStatus.textContent = `Aktiv: ${addr}`;
+          macInput.value = addr;
+        }
+      };
 
       async function sendCmd(cmdStr) {
         const bytes = new TextEncoder().encode(cmdStr);
@@ -437,8 +479,8 @@
       btnAuto.onclick = async () => {
         const newVal = !currentAuto;
         const value = newVal ? 127 : 0;
-        await sendMidiCCviaBle(80, value);
-        log(`BLE→MI: CC80 ${newVal ? 'PÅ (127)' : 'AV (0)'} → ESP32→SPI→Daisy`);
+        await sendMidiCC(0, 80, newVal ? 127 : 0);
+        log(`MIDI CC80 ch1 ${newVal ? '127 (on)' : '0 (off)'} → Daisy`);
         currentAuto = newVal;
         btnAuto.textContent = newVal ? "PÅ" : "AV";
         btnAuto.className = "ctrl-btn toggle-btn " + (newVal ? "toggle-on" : "toggle-off");
@@ -857,12 +899,15 @@
           enableControls(true);
 
           log("✅ Ansluten!");
-
-          // Nollställ lastNotify så gamla notiser inte falskt matchar nya waiters
           lastNotify = "";
-
-          // Skicka heartbeat direkt för att trigga första SPI-utbytet
           await sendHB();
+          // Hämta sparad peer MAC i bakgrunden
+          try {
+            await sendCmd("get_mac");
+            const resp = await waitForNotify(s => s.startsWith("mac:"), 2000);
+            const addr = resp.slice(4);
+            if (addr !== "none") { macInput.value = addr; macStatus.textContent = `Aktiv: ${addr}`; }
+          } catch { /* ingen MAC sparad */ }
 
         } catch (e) {
           log("ERROR: " + e.message);

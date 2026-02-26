@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Access</title>
+  <style>
+    body { font-family: system-ui; padding: 40px; max-width: 520px; margin: 0 auto; }
+    input, button { font-size: 16px; padding: 10px 12px; }
+    button { cursor: pointer; }
+    .row { display: flex; gap: 10px; margin-top: 10px; }
+    .err { color: #b00020; margin-top: 10px; display: none; }
+    .hint { opacity: 0.7; margin-top: 14px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <h1>Kod</h1>
+  <p>Skriv koden för att öppna.</p>
+
+  <div class="row">
+    <input id="pin" type="password" inputmode="numeric" autocomplete="one-time-code" placeholder="PIN" />
+    <button id="go">Öppna</button>
+  </div>
+
+  <div id="err" class="err">Fel kod.</div>
+  <div class="hint">Tips: dela inte länken om du vill hålla den lågprofil 🙂</div>
+
+  <script>
+    const ACCESS_PIN = "1234";  // <-- byt till din kod
+    const DEST = "./app.html";  // din riktiga app
+
+    const pinEl = document.getElementById("pin");
+    const errEl = document.getElementById("err");
+    const goBtn = document.getElementById("go");
+
+    function unlock() {
+      if (pinEl.value === ACCESS_PIN) {
+        sessionStorage.setItem("autostomp_ok", "1");
+        location.href = DEST;
+      } else {
+        errEl.style.display = "block";
+        pinEl.select();
+      }
+    }
+
+    goBtn.addEventListener("click", unlock);
+    pinEl.addEventListener("keydown", (e) => { if (e.key === "Enter") unlock(); });
+  </script>
+</body>
+</html>

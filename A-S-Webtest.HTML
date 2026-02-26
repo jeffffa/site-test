@@ -597,7 +597,7 @@
       <input id="macInput" type="text" placeholder="AA:BB:CC:DD:EE:FF" />
       <div class="mac-row">
         <button id="btnSetMac">Save</button>
-        <button id="btnGetMac">Fetch</button>
+        <button id="btnClearMac" style="color:#f88;border-color:#622;">Clear</button>
         <button id="btnScanEspnow">Pair</button>
       </div>
       <div class="muted" id="macStatus" style="margin-top:8px;">No MAC configured.</div>
@@ -666,6 +666,7 @@
       const macInput     = document.getElementById("macInput");
       const btnSetMac      = document.getElementById("btnSetMac");
       const btnGetMac      = document.getElementById("btnGetMac");
+      const btnClearMac    = document.getElementById("btnClearMac");
       const btnScanEspnow  = document.getElementById("btnScanEspnow");
       const macStatus      = document.getElementById("macStatus");
       const tempoSlider  = document.getElementById("tempoSlider");
@@ -859,6 +860,16 @@
           macStatus.textContent = `Active: ${addr}`;
           macInput.value = addr;
         }
+      };
+
+      // === Clear MAC ===
+      btnClearMac.onclick = async () => {
+        await sendCmd("clear_mac");
+        try {
+          await waitForNotify(s => s === "mac_cleared", 3000);
+          macInput.value = "";
+          macStatus.textContent = "Cleared — accepting all ESP-NOW senders.";
+        } catch { macStatus.textContent = "Clear failed."; }
       };
 
       // === ESP-NOW scan ===

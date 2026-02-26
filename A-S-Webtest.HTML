@@ -665,7 +665,6 @@
       const autoLabel    = document.getElementById("autoLabel");
       const macInput     = document.getElementById("macInput");
       const btnSetMac      = document.getElementById("btnSetMac");
-      const btnGetMac      = document.getElementById("btnGetMac");
       const btnClearMac    = document.getElementById("btnClearMac");
       const btnScanEspnow  = document.getElementById("btnScanEspnow");
       const macStatus      = document.getElementById("macStatus");
@@ -849,18 +848,7 @@
         macStatus.textContent = resp === "mac_ok" ? `Saved: ${mac}` : "Error saving MAC";
       };
 
-      btnGetMac.onclick = async () => {
-        await sendCmd("get_mac");
-        const resp = await waitForNotify(s => s.startsWith("mac:"), 3000);
-        const addr = resp.slice(4);
-        if (addr === "none") {
-          macStatus.textContent = "No MAC configured.";
-          macInput.value = "";
-        } else {
-          macStatus.textContent = `Active: ${addr}`;
-          macInput.value = addr;
-        }
-      };
+
 
       // === Clear MAC ===
       btnClearMac.onclick = async () => {

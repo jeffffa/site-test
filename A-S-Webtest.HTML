@@ -4,7 +4,6 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <meta name="robots" content="noindex, nofollow" />
   <title>Autostomp BLE</title>
   <style>
     * {
@@ -455,22 +454,6 @@
       margin: 0;
     }
 
-
-    /* ---- PIN input ---- */
-    #pinInput {
-      background: #252525;
-      color: #ccc;
-      border: 1px solid #444;
-      padding: 10px 12px;
-      border-radius: 8px;
-      font-family: monospace;
-      font-size: 0.9em;
-      width: 100%;
-      min-height: 46px;
-      touch-action: manipulation;
-    }
-
-
     /* ---- Upload section ---- */
     .upload-section {
       display: flex;
@@ -509,20 +492,6 @@
     <button id="btnConnect">Connect</button>
     <button id="btnDisconnect" disabled>Disconnect</button>
   </div>
-
-
-  <div class="card" id="pinCard" style="margin-top:0;">
-    <h3>Access</h3>
-    <div class="muted" style="margin-bottom:8px;">
-      Optional: enter your PIN to enable Connect (helps prevent random clicks if someone finds the link).
-    </div>
-    <div class="mac-row">
-      <input id="pinInput" type="password" placeholder="PIN" inputmode="numeric" style="flex:1;" />
-      <button id="btnUnlock" style="flex:1;margin:0;">Unlock</button>
-    </div>
-    <div class="muted" id="pinStatus" style="margin-top:8px;">Locked.</div>
-  </div>
-
 
   <div class="tabs">
     <button class="tab-btn active" id="btnTab1" onclick="openTab('tab1')">Control</button>
@@ -689,11 +658,6 @@
       const fileList     = document.getElementById("fileList");
       const fileListEmpty= document.getElementById("fileListEmpty");
 
-      // === Optional PIN gate ===
-      const pinInput     = document.getElementById("pinInput");
-      const btnUnlock    = document.getElementById("btnUnlock");
-      const pinStatus    = document.getElementById("pinStatus");
-
       const elTempo      = document.getElementById("tempoDisplay");
       const btnTempoUp   = document.getElementById("btnTempoUp");
       const btnTempoDown = document.getElementById("btnTempoDown");
@@ -715,44 +679,6 @@
       const fsStatus     = document.getElementById("fsStatus");
 
       function log(s) { console.log(s); }
-
-      // === Optional PIN gate ===
-      // Set this to a non-empty string to require a PIN before "Connect" is enabled.
-      // Tip: keep it simple (e.g. "1234"). This is NOT strong security (the code is public),
-      // but it prevents most accidental/random clicks.
-      const ACCESS_PIN = "1234"; // <-- change me (or set to "" to disable)
-      const PIN_KEY = "autostomp_unlocked";
-
-      function setUnlocked(unlocked) {
-        if (unlocked) sessionStorage.setItem(PIN_KEY, "1");
-        else sessionStorage.removeItem(PIN_KEY);
-        btnConnect.disabled = !unlocked;
-        btnDisconnect.disabled = !unlocked && btnDisconnect.disabled; // no-op; keep current
-        if (pinStatus) pinStatus.textContent = unlocked ? "Unlocked — you can Connect." : "Locked.";
-      }
-
-      // Initialize gate
-      if (ACCESS_PIN && ACCESS_PIN.length > 0) {
-        const already = sessionStorage.getItem(PIN_KEY) === "1";
-        setUnlocked(already);
-      } else {
-        // No PIN required
-        if (pinStatus) pinStatus.textContent = "No PIN required.";
-        btnConnect.disabled = false;
-      }
-
-      if (btnUnlock) {
-        btnUnlock.onclick = () => {
-          if (!ACCESS_PIN) { setUnlocked(true); return; }
-          const entered = (pinInput?.value || "").trim();
-          if (entered === ACCESS_PIN) {
-            setUnlocked(true);
-          } else {
-            if (pinStatus) pinStatus.textContent = "Wrong PIN.";
-          }
-        };
-      }
-
 
       function setProgress(pct) {
         pct = Math.max(0, Math.min(100, pct | 0));
@@ -1348,10 +1274,7 @@
             log("Disconnected.");
             bleStatusEl.textContent = "Disconnected";
             bleStatusEl.className   = "ble-disconnected";
-            // Respect PIN gate on disconnect
-            const pinRequired = (typeof ACCESS_PIN !== "undefined" && ACCESS_PIN && ACCESS_PIN.length>0);
-            const unlocked = !pinRequired || (sessionStorage.getItem(PIN_KEY) === "1");
-            btnConnect.disabled    = !unlocked;
+            btnConnect.disabled    = false;
             btnDisconnect.disabled = true;
             btnUpload.disabled     = true;
             btnWavUpload.disabled  = true;

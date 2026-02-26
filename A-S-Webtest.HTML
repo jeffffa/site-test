@@ -1,4 +1,62 @@
 <!doctype html>
+<<<<<<< HEAD
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Autostomp BLE</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      margin: 0 auto;
+      padding: 12px 14px;
+      background-color: #121212;
+      color: #ffffff;
+      max-width: 520px;
+    }
+
+    h2 {
+      font-size: 1.4em;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    h3 {
+      font-size: 0.72em;
+      font-weight: 600;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin: 0 0 10px;
+    }
+
+    button {
+      padding: 12px 18px;
+      margin: 4px 4px 4px 0;
+      background-color: #2a2a2a;
+      color: white;
+      border: 1px solid #444;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1em;
+      min-height: 48px;
+      touch-action: manipulation;
+    }
+
+    button:active {
+      background-color: #3a3a3a;
+    }
+
+    button:disabled {
+      opacity: 0.35;
+=======
 <html lang="sv">
 
 <head>
@@ -29,10 +87,119 @@
 
     button:disabled {
       opacity: 0.5;
+>>>>>>> 5d91662498b9cad5d9aa6a39a7a44f1cf526ff1c
       cursor: not-allowed;
     }
 
     input[type="file"] {
+<<<<<<< HEAD
+      margin: 6px 0;
+      color: #bbb;
+      font-size: 0.9em;
+      width: 100%;
+    }
+
+    .muted {
+      color: #777;
+      font-size: 0.85em;
+    }
+
+    /* ---- Header ---- */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    #bleStatus {
+      display: inline-block;
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 0.78em;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .ble-connected    { background: #1a4d1a; color: #6dff6d; }
+    .ble-disconnected { background: #4d1a1a; color: #ff8080; }
+
+    /* ---- Connect row ---- */
+    .connect-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .connect-row button {
+      flex: 1;
+      margin: 0;
+    }
+
+    /* ---- Tabs ---- */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin: 0 0 12px;
+      background: #1a1a1a;
+      padding: 4px;
+      border-radius: 12px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #666;
+      padding: 10px 4px;
+      cursor: pointer;
+      font-size: 0.82em;
+      font-weight: 700;
+      border-radius: 8px;
+      min-height: 44px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      touch-action: manipulation;
+      margin: 0;
+    }
+
+    .tab-btn.active {
+      background: #2e2e2e;
+      color: #fff;
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ---- Card ---- */
+    .card {
+      background: #1c1c1c;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin: 10px 0;
+    }
+
+    .card.disabled {
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    /* ---- Tempo card ---- */
+    .tempo-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 16px;
+    }
+
+    .ctrl-btn {
+      width: 54px;
+      height: 54px;
+      font-size: 1.6em;
+      border-radius: 50%;
+=======
       margin: 8px 0;
       color: #ccc;
     }
@@ -81,10 +248,211 @@
       line-height: 1;
       border-radius: 6px;
       cursor: pointer;
+>>>>>>> 5d91662498b9cad5d9aa6a39a7a44f1cf526ff1c
       padding: 0;
       display: inline-flex;
       align-items: center;
       justify-content: center;
+<<<<<<< HEAD
+      background: #2a2a2a;
+      border: 1px solid #444;
+      color: #fff;
+      flex-shrink: 0;
+      min-height: 0;
+      margin: 0;
+    }
+
+    .tempo-center {
+      text-align: center;
+    }
+
+    #tempoDisplay {
+      font-size: 3.2em;
+      font-weight: 800;
+      line-height: 1;
+      min-width: 90px;
+      display: block;
+    }
+
+    .tempo-unit {
+      font-size: 0.72em;
+      color: #555;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    /* ---- Slider ---- */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 36px;
+      background: transparent;
+      cursor: pointer;
+      margin: 0;
+      padding: 0;
+      touch-action: none;
+    }
+
+    input[type="range"]::-webkit-slider-runnable-track {
+      height: 6px;
+      border-radius: 3px;
+      background: #333;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #0a84ff;
+      margin-top: -12px;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(10,132,255,0.45);
+    }
+
+    input[type="range"]::-moz-range-track {
+      height: 6px;
+      border-radius: 3px;
+      background: #333;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #0a84ff;
+      border: none;
+      cursor: pointer;
+    }
+
+    .slider-labels {
+      display: flex;
+      justify-content: space-between;
+      color: #444;
+      font-size: 0.7em;
+      margin-top: 2px;
+    }
+
+    /* ---- Auto button ---- */
+    #btnAuto {
+      width: 100%;
+      height: 68px;
+      border-radius: 12px;
+      font-size: 1em;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 0;
+      transition: background 0.12s, border-color 0.12s, color 0.12s;
+      min-height: 0;
+    }
+
+    .auto-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      transition: background 0.12s, box-shadow 0.12s;
+    }
+
+    #btnAuto.auto-on {
+      background: #0c3d0c;
+      border: 2px solid #2e8c2e;
+      color: #6dff6d;
+    }
+
+    #btnAuto.auto-on .auto-dot {
+      background: #6dff6d;
+      box-shadow: 0 0 8px #6dff6d;
+    }
+
+    #btnAuto.auto-off {
+      background: #222;
+      border: 2px solid #3a3a3a;
+      color: #666;
+    }
+
+    #btnAuto.auto-off .auto-dot {
+      background: #444;
+    }
+
+    /* ---- Sound selector ---- */
+    .sound-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    #soundName {
+      flex: 1;
+      text-align: center;
+      font-family: monospace;
+      font-size: 0.88em;
+      color: #ccc;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ---- Stomp button ---- */
+    .stomp-wrap {
+      display: flex;
+      justify-content: center;
+      padding: 6px 0 2px;
+    }
+
+    #btnStomp {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 35%, #3a2800, #1a1000);
+      border: 3px solid #7a5000;
+      color: #ffb347;
+      font-size: 1em;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin: 0;
+      min-height: 0;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.6), inset 0 2px 4px rgba(255,179,71,0.08);
+      transition: transform 0.08s, box-shadow 0.08s, background 0.08s;
+    }
+
+    #btnStomp:active {
+      transform: scale(0.93);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.7), inset 0 3px 8px rgba(0,0,0,0.5);
+      background: radial-gradient(circle at 40% 35%, #2a1e00, #0e0900);
+    }
+
+    #btnStomp:disabled {
+      opacity: 0.3;
+    }
+
+    .stomp-icon {
+      font-size: 2em;
+      line-height: 1;
+    }
+
+    /* ---- File list ---- */
+    #fileList {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 8px;
+      max-height: 270px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+=======
     }
 
     .toggle-btn {
@@ -121,11 +489,28 @@
       list-style: none;
       padding: 0;
       margin: 8px 0;
+>>>>>>> 5d91662498b9cad5d9aa6a39a7a44f1cf526ff1c
     }
 
     #fileList li {
       display: flex;
       align-items: center;
+<<<<<<< HEAD
+      padding: 0 10px;
+      margin: 3px 0;
+      background: #252525;
+      border-radius: 7px;
+      font-family: monospace;
+      font-size: 0.88em;
+      height: 48px;
+    }
+
+    #fileList li .fidx {
+      color: #555;
+      min-width: 28px;
+      font-size: 0.8em;
+      flex-shrink: 0;
+=======
       padding: 6px 10px;
       margin: 3px 0;
       background: #1e1e1e;
@@ -138,14 +523,104 @@
     #fileList li .fidx {
       color: #888;
       min-width: 32px;
+>>>>>>> 5d91662498b9cad5d9aa6a39a7a44f1cf526ff1c
     }
 
     #fileList li .fname {
       flex: 1;
+<<<<<<< HEAD
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+=======
+>>>>>>> 5d91662498b9cad5d9aa6a39a7a44f1cf526ff1c
     }
 
     #fileList li .del-btn {
       background: transparent;
+<<<<<<< HEAD
+      border: 1px solid #444;
+      color: #888;
+      padding: 4px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.8em;
+      flex-shrink: 0;
+      min-height: 34px;
+      margin: 0;
+      touch-action: manipulation;
+    }
+
+    #fileList li .del-btn:active {
+      border-color: #cc2244;
+      color: #cc2244;
+    }
+
+    #fileList li.active {
+      background: #122012;
+      border: 1px solid #2a5c2a;
+    }
+
+    #fileList li.active .fname {
+      color: #6dff6d;
+    }
+
+    /* ---- Full-width button ---- */
+    .btn-full {
+      width: 100%;
+      margin: 6px 0 0;
+    }
+
+    /* ---- MAC input ---- */
+    #macInput {
+      background: #252525;
+      color: #ccc;
+      border: 1px solid #444;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 0.9em;
+      width: 100%;
+      min-height: 46px;
+      touch-action: manipulation;
+    }
+
+    .mac-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .mac-row button {
+      flex: 1;
+      margin: 0;
+    }
+
+    /* ---- Upload section ---- */
+    .upload-section {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    /* ---- Progress ---- */
+    progress {
+      width: 100%;
+      height: 8px;
+      accent-color: #0a84ff;
+      border-radius: 4px;
+    }
+
+    #progressBar {
+      margin-top: 14px;
+    }
+
+    #progText {
+      text-align: right;
+      font-size: 0.78em;
+      color: #666;
+      margin-top: 3px;
+=======
       border: 1px solid #555;
       color: #aaa;
       padding: 2px 8px;
@@ -224,21 +699,155 @@
     .tab-content.active {
       display: block;
       filter: brightness(1);
+>>>>>>> 5d91662498b9cad5d9aa6a39a7a44f1cf526ff1c
     }
   </style>
 </head>
 
 <body>
+<<<<<<< HEAD
+  <div class="header">
+    <h2>Autostomp BLE</h2>
+    <span id="bleStatus" class="ble-disconnected">Disconnected</span>
+  </div>
+
+  <div class="connect-row">
+=======
   <h2>Autostomp BLE Uploader</h2>
   <div class="muted">
     Web Bluetooth fungerar bäst i Chrome/Edge på desktop. Kräver HTTPS eller localhost.
   </div>
 
   <div class="row">
+>>>>>>> 5d91662498b9cad5d9aa6a39a7a44f1cf526ff1c
     <button id="btnConnect">Connect</button>
     <button id="btnDisconnect" disabled>Disconnect</button>
   </div>
 
+<<<<<<< HEAD
+  <div class="tabs">
+    <button class="tab-btn active" id="btnTab1" onclick="openTab('tab1')">Control</button>
+    <button class="tab-btn" id="btnTab2" onclick="openTab('tab2')">Sound</button>
+    <button class="tab-btn" id="btnTab3" onclick="openTab('tab3')">Settings</button>
+  </div>
+
+  <!-- Tab 1: Control -->
+  <div id="tab1" class="tab-content active">
+
+    <!-- Tempo -->
+    <div class="card disabled" id="tempoCard">
+      <h3>Tempo</h3>
+      <div class="tempo-row">
+        <button class="ctrl-btn" id="btnTempoDown">&minus;</button>
+        <div class="tempo-center">
+          <span id="tempoDisplay">&mdash;</span>
+          <div class="tempo-unit">BPM</div>
+        </div>
+        <button class="ctrl-btn" id="btnTempoUp">+</button>
+      </div>
+      <input type="range" id="tempoSlider" min="30" max="300" value="120" />
+      <div class="slider-labels">
+        <span>30</span><span>120</span><span>200</span><span>300</span>
+      </div>
+    </div>
+
+    <!-- Sound -->
+    <div class="card disabled" id="soundCard">
+      <h3>Sound</h3>
+      <div class="sound-row">
+        <button class="ctrl-btn" id="btnSoundPrev">&#9664;</button>
+        <div id="soundName">—</div>
+        <button class="ctrl-btn" id="btnSoundNext">&#9654;</button>
+      </div>
+    </div>
+
+    <!-- Auto -->
+    <div class="card disabled" id="autoCard">
+      <h3>Auto</h3>
+      <button id="btnAuto" class="auto-off">
+        <span class="auto-dot"></span>
+        <span id="autoLabel">—</span>
+      </button>
+    </div>
+
+    <!-- Stomp -->
+    <div class="card disabled" id="stompCard">
+      <h3>Manual Stomp</h3>
+      <div class="stomp-wrap">
+        <button id="btnStomp">
+          <span class="stomp-icon">👟</span>
+          <span>STOMP</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Tab 2: Sound -->
+  <div id="tab2" class="tab-content">
+
+    <!-- WAV file list -->
+    <div class="card">
+      <h3>WAV Files on Device</h3>
+      <div id="fileListEmpty" class="muted">Press "Refresh" to load file list.</div>
+      <ul id="fileList"></ul>
+      <button id="btnListFiles" disabled class="btn-full">Refresh List</button>
+    </div>
+
+    <!-- WAV upload -->
+    <div class="card">
+      <h3>WAV Upload</h3>
+      <div class="muted" style="margin-bottom:8px;">
+        Device must be running normally (not bootloader). Select one or more .wav files.
+      </div>
+      <div class="upload-section">
+        <input id="wavFile" type="file" accept=".wav,audio/wav,audio/x-wav" multiple />
+        <button id="btnWavUpload" disabled class="btn-full">Upload WAV</button>
+      </div>
+      <div id="wavStatus" class="muted" style="margin-top:8px;"></div>
+    </div>
+
+    <!-- Flash storage management -->
+    <div class="card">
+      <h3>Flash Storage</h3>
+      <div id="fsStatus" class="muted" style="margin-bottom:10px;">
+        Compact: reclaim space from old/failed uploads (keeps all files).<br>
+        Format: erase ALL files permanently.
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button id="btnCompact" disabled style="flex:1;margin:0;">Compact FS</button>
+        <button id="btnFormat"  disabled style="flex:1;margin:0;color:#f88;border-color:#622;">Format FS</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Tab 3: Settings -->
+  <div id="tab3" class="tab-content">
+    <div class="card disabled" id="espnowCard">
+      <h3>Peer MAC (ESP-NOW)</h3>
+      <input id="macInput" type="text" placeholder="AA:BB:CC:DD:EE:FF" />
+      <div class="mac-row">
+        <button id="btnSetMac">Save</button>
+        <button id="btnGetMac">Fetch</button>
+      </div>
+      <div class="muted" id="macStatus" style="margin-top:8px;">No MAC configured.</div>
+    </div>
+    <div class="card">
+      <h3>Firmware Update</h3>
+      <div class="muted" style="margin-bottom:10px;">
+        Device must be in bootloader mode (hold button at startup).
+      </div>
+      <div class="upload-section">
+        <input id="fwFile" type="file" accept=".bin,application/octet-stream" />
+        <button id="btnUpload" disabled class="btn-full">Upload Firmware</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div id="progressBar" style="display:none;">
+=======
   <div class="tab-container">
     <div class="tabs">
       <button class="tab-btn active" id="btnTab1" onclick="openTab('tab1')">1. Styrning & WAV</button>
@@ -312,6 +921,7 @@
   </div>
 
   <div class="row" style="margin-top: 16px;">
+>>>>>>> 5d91662498b9cad5d9aa6a39a7a44f1cf526ff1c
     <progress id="prog" value="0" max="100"></progress>
     <div id="progText">0%</div>
   </div>
@@ -321,6 +931,61 @@
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
       document.getElementById(tabId).classList.add('active');
+<<<<<<< HEAD
+      const map = { tab1: 'btnTab1', tab2: 'btnTab2', tab3: 'btnTab3' };
+      document.getElementById(map[tabId]).classList.add('active');
+      document.getElementById('progressBar').style.display = tabId === 'tab1' ? 'none' : 'block';
+    }
+
+    (() => {
+      // === BLE UUIDs ===
+      const SVC_UUID = "7b7a0001-2e6f-4f62-9a0c-2c9a7f9a0001";
+      const RX_UUID  = "7b7a0002-2e6f-4f62-9a0c-2c9a7f9a0001";
+      const TX_UUID  = "7b7a0003-2e6f-4f62-9a0c-2c9a7f9a0001";
+
+      // === ASTP framing ===
+      const MAX_PAYLOAD = 128;
+      const HEADER_SIZE = 6;
+      const PKT_SIZE    = HEADER_SIZE + MAX_PAYLOAD;
+      const FD_DATA_MAX = MAX_PAYLOAD - 2;
+      const UD_DATA_MAX = MAX_PAYLOAD - 2;
+
+      // === DOM refs ===
+      const bleStatusEl  = document.getElementById("bleStatus");
+      const btnConnect   = document.getElementById("btnConnect");
+      const btnDisconnect= document.getElementById("btnDisconnect");
+      const btnUpload    = document.getElementById("btnUpload");
+      const btnWavUpload = document.getElementById("btnWavUpload");
+      const btnListFiles = document.getElementById("btnListFiles");
+      const fwFile       = document.getElementById("fwFile");
+      const wavFile      = document.getElementById("wavFile");
+      const wavStatus    = document.getElementById("wavStatus");
+      const prog         = document.getElementById("prog");
+      const progText     = document.getElementById("progText");
+      const fileList     = document.getElementById("fileList");
+      const fileListEmpty= document.getElementById("fileListEmpty");
+
+      const elTempo      = document.getElementById("tempoDisplay");
+      const btnTempoUp   = document.getElementById("btnTempoUp");
+      const btnTempoDown = document.getElementById("btnTempoDown");
+      const btnAuto      = document.getElementById("btnAuto");
+      const autoLabel    = document.getElementById("autoLabel");
+      const macInput     = document.getElementById("macInput");
+      const btnSetMac    = document.getElementById("btnSetMac");
+      const btnGetMac    = document.getElementById("btnGetMac");
+      const macStatus    = document.getElementById("macStatus");
+      const tempoSlider  = document.getElementById("tempoSlider");
+      const btnStomp     = document.getElementById("btnStomp");
+      const btnSoundPrev = document.getElementById("btnSoundPrev");
+      const btnSoundNext = document.getElementById("btnSoundNext");
+      const soundNameEl  = document.getElementById("soundName");
+      const controlCards = ["tempoCard","soundCard","autoCard","stompCard","espnowCard"].map(id => document.getElementById(id));
+      const btnCompact   = document.getElementById("btnCompact");
+      const btnFormat    = document.getElementById("btnFormat");
+      const fsStatus     = document.getElementById("fsStatus");
+
+      function log(s) { console.log(s); }
+=======
       if (tabId === 'tab1') document.getElementById('btnTab1').classList.add('active');
       else if (tabId === 'tab2') document.getElementById('btnTab2').classList.add('active');
       else if (tabId === 'tab3') document.getElementById('btnTab3').classList.add('active');
@@ -362,6 +1027,7 @@
         elLog.scrollTop = elLog.scrollHeight;
         console.log(s);
       }
+>>>>>>> 5d91662498b9cad5d9aa6a39a7a44f1cf526ff1c
 
       function setProgress(pct) {
         pct = Math.max(0, Math.min(100, pct | 0));
@@ -373,6 +1039,54 @@
 
       // === BLE state ===
       let device = null;
+<<<<<<< HEAD
+      let chrRX  = null;
+      let chrTX  = null;
+
+      // === Notification state ===
+      let lastNotify   = "";
+      let waiters      = [];
+      let notifyHandler= null;
+      let bootReady    = false;
+
+      // === Device state ===
+      let currentTempo = null;
+      let currentAuto  = null;
+      let currentSound = null;
+      let currentSoundName = null;
+
+      // === Controls enable/disable ===
+      function enableControls(on) {
+        controlCards.forEach(el => {
+          if (on) el.classList.remove('disabled');
+          else el.classList.add('disabled');
+        });
+      }
+
+      // === Auto button ===
+      function updateAutoBtn() {
+        if (currentAuto === null) {
+          autoLabel.textContent = "—";
+          btnAuto.className = "auto-off";
+        } else if (currentAuto) {
+          autoLabel.textContent = "ON";
+          btnAuto.className = "auto-on";
+        } else {
+          autoLabel.textContent = "OFF";
+          btnAuto.className = "auto-off";
+        }
+      }
+
+      // === Sound display ===
+      function updateSoundDisplay() {
+        soundNameEl.textContent = currentSoundName || (currentSound !== null ? `#${currentSound}` : '—');
+        document.querySelectorAll('#fileList li').forEach(li => {
+          li.classList.toggle('active', parseInt(li.dataset.idx, 10) === currentSound);
+        });
+      }
+
+      // === MIDI ===
+=======
       let chrRX = null;
       let chrTX = null;
 
@@ -399,12 +1113,17 @@
 
       // Skicka rå MIDI via BLE → ESP32 → SPI → Daisy
       // Statusbyte ≥ 0x80 — Daisy auto-detekterar som MIDI
+>>>>>>> 5d91662498b9cad5d9aa6a39a7a44f1cf526ff1c
       async function sendMidi(statusByte, data1, data2) {
         const payload = new Uint8Array(data2 !== undefined ? 3 : 2);
         payload[0] = statusByte;
         payload[1] = data1;
         if (data2 !== undefined) payload[2] = data2;
+<<<<<<< HEAD
+        await writePayload(payload);
+=======
         await writePayload(payload, { withoutResponse: false });
+>>>>>>> 5d91662498b9cad5d9aa6a39a7a44f1cf526ff1c
       }
 
       async function sendMidiCC(channel, cc, value) {
@@ -412,6 +1131,100 @@
       }
 
       function parseStatus(msg) {
+<<<<<<< HEAD
+        const tm = msg.match(/tempo=(\d+)/);
+        const sm = msg.match(/sound=(\d+)/);
+        const am = msg.match(/auto=(\d+)/);
+        const ni = msg.indexOf('name=');
+        if (tm) {
+          currentTempo = parseInt(tm[1], 10);
+          elTempo.textContent = currentTempo;
+          if (!sliderMoving) tempoSlider.value = currentTempo;
+        }
+        if (sm) {
+          currentSound = parseInt(sm[1], 10);
+          currentSoundName = ni >= 0 ? msg.slice(ni + 5).trim() : null;
+          updateSoundDisplay();
+        }
+        if (am) {
+          currentAuto = parseInt(am[1], 10) !== 0;
+          updateAutoBtn();
+        }
+      }
+
+      // === Tempo buttons ===
+      btnTempoUp.onclick = async () => {
+        const t = (currentTempo ?? 120) + 1;
+        if (t > 300) return;
+        await sendMidiCC(0, 81, 127);
+        currentTempo = t;
+        elTempo.textContent = t;
+        tempoSlider.value = t;
+      };
+
+      btnTempoDown.onclick = async () => {
+        const t = (currentTempo ?? 120) - 1;
+        if (t < 30) return;
+        await sendMidiCC(0, 82, 127);
+        currentTempo = t;
+        elTempo.textContent = t;
+        tempoSlider.value = t;
+      };
+
+      // === Tempo slider ===
+      let sliderMoving = false;
+
+      tempoSlider.addEventListener('input', () => {
+        sliderMoving = true;
+        elTempo.textContent = parseInt(tempoSlider.value, 10);
+      });
+
+      tempoSlider.addEventListener('change', async () => {
+        const target = parseInt(tempoSlider.value, 10);
+        const from   = currentTempo ?? 120;
+        const delta  = target - from;
+        sliderMoving = false;
+        if (delta === 0) return;
+        const cc    = delta > 0 ? 81 : 82;
+        const steps = Math.abs(delta);
+        for (let i = 0; i < steps; i++) {
+          await sendMidiCC(0, cc, 127);
+        }
+        currentTempo = target;
+        elTempo.textContent = target;
+      });
+
+      // === Sound prev/next ===
+      btnSoundPrev.onclick = async () => { await sendCmd("sound_prev"); };
+      btnSoundNext.onclick = async () => { await sendCmd("sound_next"); };
+
+      async function selectSound(idx, name) {
+        await sendCmd(`sound:${idx}`);
+        currentSound     = idx;
+        currentSoundName = name;
+        updateSoundDisplay();
+      }
+
+      // === Stomp button ===
+      btnStomp.onclick = async () => {
+        await sendMidiCC(0, 83, 100);
+        log("Manual stomp: CC83 vel=100");
+      };
+
+      // === Auto button ===
+      btnAuto.onclick = async () => {
+        const newVal = !currentAuto;
+        await sendMidiCC(0, 80, newVal ? 127 : 0);
+        currentAuto = newVal;
+        updateAutoBtn();
+      };
+
+      // === MAC ===
+      btnSetMac.onclick = async () => {
+        const mac = macInput.value.trim().toUpperCase();
+        if (!/^([0-9A-F]{2}:){5}[0-9A-F]{2}$/.test(mac)) {
+          macStatus.textContent = "Invalid format. Use AA:BB:CC:DD:EE:FF";
+=======
         // "status tempo=120 sound=7 auto=0 name=K Hist.wav"
         const tm = msg.match(/tempo=(\d+)/);
         const am = msg.match(/auto=(\d+)/);
@@ -435,11 +1248,16 @@
         const mac = macInput.value.trim().toUpperCase();
         if (!/^([0-9A-F]{2}:){5}[0-9A-F]{2}$/.test(mac)) {
           macStatus.textContent = "❌ Ogiltigt format. Använd AA:BB:CC:DD:EE:FF";
+>>>>>>> 5d91662498b9cad5d9aa6a39a7a44f1cf526ff1c
           return;
         }
         await sendCmd(`set_mac:${mac}`);
         const resp = await waitForNotify(s => s === "mac_ok" || s === "mac_err", 3000);
+<<<<<<< HEAD
+        macStatus.textContent = resp === "mac_ok" ? `Saved: ${mac}` : "Error saving MAC";
+=======
         macStatus.textContent = resp === "mac_ok" ? `✅ Sparad: ${mac}` : "❌ Fel vid sparning";
+>>>>>>> 5d91662498b9cad5d9aa6a39a7a44f1cf526ff1c
       };
 
       btnGetMac.onclick = async () => {
@@ -447,15 +1265,28 @@
         const resp = await waitForNotify(s => s.startsWith("mac:"), 3000);
         const addr = resp.slice(4);
         if (addr === "none") {
+<<<<<<< HEAD
+          macStatus.textContent = "No MAC configured.";
+          macInput.value = "";
+        } else {
+          macStatus.textContent = `Active: ${addr}`;
+=======
           macStatus.textContent = "Ingen MAC konfigurerad.";
           macInput.value = "";
         } else {
           macStatus.textContent = `Aktiv: ${addr}`;
+>>>>>>> 5d91662498b9cad5d9aa6a39a7a44f1cf526ff1c
           macInput.value = addr;
         }
       };
 
       async function sendCmd(cmdStr) {
+<<<<<<< HEAD
+        await writePayload(new TextEncoder().encode(cmdStr));
+      }
+
+      // === ASTP ===
+=======
         const bytes = new TextEncoder().encode(cmdStr);
         await writePayload(bytes, { withoutResponse: false });
       }
@@ -487,6 +1318,7 @@
       };
 
 
+>>>>>>> 5d91662498b9cad5d9aa6a39a7a44f1cf526ff1c
       function isASTP(u8) {
         return u8.length >= 4 &&
           u8[0] === 0x41 && u8[1] === 0x53 && u8[2] === 0x54 && u8[3] === 0x50;
@@ -499,7 +1331,11 @@
       function makeASTP(payloadU8) {
         const payloadLen = Math.min(payloadU8.length, MAX_PAYLOAD);
         const pkt = new Uint8Array(PKT_SIZE);
+<<<<<<< HEAD
+        pkt[0]=0x41; pkt[1]=0x53; pkt[2]=0x54; pkt[3]=0x50;
+=======
         pkt[0] = 0x41; pkt[1] = 0x53; pkt[2] = 0x54; pkt[3] = 0x50; // ASTP
+>>>>>>> 5d91662498b9cad5d9aa6a39a7a44f1cf526ff1c
         pkt[4] = payloadLen & 0xFF;
         pkt[5] = (payloadLen >> 8) & 0xFF;
         pkt.set(payloadU8.slice(0, payloadLen), HEADER_SIZE);
@@ -517,6 +1353,17 @@
 
       function onNotify(ev) {
         const v = new Uint8Array(ev.target.value.buffer);
+<<<<<<< HEAD
+        if (!isASTP(v)) {
+          log("NOTIFY: (non-ASTP) " + [...v.slice(0,12)].map(b=>b.toString(16).padStart(2,"0")).join(" "));
+          return;
+        }
+        const txt = payloadAsText(v).trim();
+        if (!txt) { log(`NOTIFY: (ASTP binary, len=${astpPayloadLen(v)})`); return; }
+
+        lastNotify = txt;
+        if (txt.includes("BOOT:READY")) bootReady = true;
+=======
 
         if (!isASTP(v)) {
           log("NOTIFY: (non-ASTP) " +
@@ -531,10 +1378,18 @@
         }
 
         lastNotify = txt;
+>>>>>>> 5d91662498b9cad5d9aa6a39a7a44f1cf526ff1c
         if (!txt.startsWith("hb_ok")) log("NOTIFY: " + txt);
         if (notifyHandler) notifyHandler(txt);
         if (txt.startsWith("status ")) parseStatus(txt);
 
+<<<<<<< HEAD
+        const remaining = [];
+        for (const w of waiters) {
+          if (!w.done && w.predicate(txt)) {
+            w.done = true; w.resolve(txt);
+          } else { remaining.push(w); }
+=======
         // Skicka till alla matchande waiters
         const remaining = [];
         for (const w of waiters) {
@@ -544,10 +1399,18 @@
           } else {
             remaining.push(w);
           }
+>>>>>>> 5d91662498b9cad5d9aa6a39a7a44f1cf526ff1c
         }
         waiters = remaining;
       }
 
+<<<<<<< HEAD
+      function waitForNotify(predicate, timeoutMs = 8000) {
+        return new Promise((resolve, reject) => {
+          if (predicate(lastNotify)) return resolve(lastNotify);
+          const w = { predicate, resolve, reject, done: false };
+          waiters.push(w);
+=======
       // Vänta tills en notifikation matchar predicatet, eller kasta timeout.
       function waitForNotify(predicate, timeoutMs = 8000) {
         return new Promise((resolve, reject) => {
@@ -556,10 +1419,22 @@
           const w = { predicate, resolve, reject, done: false };
           waiters.push(w);
 
+>>>>>>> 5d91662498b9cad5d9aa6a39a7a44f1cf526ff1c
           const t = setTimeout(() => {
             if (!w.done) {
               w.done = true;
               waiters = waiters.filter(x => x !== w);
+<<<<<<< HEAD
+              reject(new Error("Timeout"));
+            }
+          }, timeoutMs);
+          const origRes = resolve, origRej = reject;
+          w.resolve = val => { clearTimeout(t); origRes(val); };
+          w.reject  = err => { clearTimeout(t); origRej(err); };
+        });
+      }
+
+=======
               reject(new Error("Timeout waiting for notify"));
             }
           }, timeoutMs);
@@ -573,6 +1448,7 @@
 
       // === BLE write helpers ===
       // Alla paket wrappar vi i ASTP (134 bytes) – matchar vad main.cpp förväntar sig.
+>>>>>>> 5d91662498b9cad5d9aa6a39a7a44f1cf526ff1c
       async function writePayload(payloadU8, { withoutResponse = false } = {}) {
         const pkt = makeASTP(payloadU8);
         if (withoutResponse && chrRX.writeValueWithoutResponse) {
@@ -582,6 +1458,124 @@
         }
       }
 
+<<<<<<< HEAD
+      // === Firmware commands ===
+      async function sendHB() {
+        await writePayload(new Uint8Array([0x68,0x62]), { withoutResponse: true });
+      }
+
+      async function sendFS(totalSize) {
+        log(`FS: ${totalSize} bytes`);
+        const p = new Uint8Array(6);
+        p[0]=0x46; p[1]=0x53;
+        p[2]=totalSize&0xFF; p[3]=(totalSize>>8)&0xFF;
+        p[4]=(totalSize>>16)&0xFF; p[5]=(totalSize>>24)&0xFF;
+        await writePayload(p, { withoutResponse: false });
+      }
+
+      async function sendFD(chunkU8) {
+        const p = new Uint8Array(2 + chunkU8.length);
+        p[0]=0x46; p[1]=0x44; p.set(chunkU8, 2);
+        await writePayload(p, { withoutResponse: true });
+      }
+
+      async function sendFE() {
+        log("FE: firmware end");
+        await writePayload(new Uint8Array([0x46,0x45]), { withoutResponse: false });
+      }
+
+      async function sendFDAndWait(chunkU8, sentBefore, maxRetries=40) {
+        const expectedOffset = sentBefore + chunkU8.length;
+        const expectedAck    = `fd_ok:${expectedOffset}`;
+        for (let attempt=1; attempt<=maxRetries; attempt++) {
+          lastNotify = "";
+          const ackPromise = waitForNotify(s => s===expectedAck || s.includes("fd_busy"), 5000);
+          await sendFD(chunkU8);
+          try {
+            const resp = await ackPromise;
+            if (resp === expectedAck) return;
+            await sleep(Math.min(10*attempt, 100));
+          } catch(e) {
+            if (attempt===maxRetries) throw new Error("FD chunk failed: max retries");
+            await sleep(50);
+          }
+        }
+        throw new Error("FD chunk failed after max retries");
+      }
+
+      async function uploadFirmware(arrayBuffer) {
+        const fw = new Uint8Array(arrayBuffer);
+        log(`Firmware: ${fw.length} bytes`);
+        setProgress(0);
+        if (!bootReady) {
+          log("Waiting for BOOT:READY...");
+          await waitForNotify(s => s.includes("BOOT:READY"), 10000);
+        }
+        await sendFS(fw.length);
+        await waitForNotify(s => s.includes("fs_ok"), 3000);
+        log("Waiting for BOOT:ERASED (~15s)...");
+        await waitForNotify(s => s.includes("BOOT:ERASED"), 25000);
+        const total = fw.length;
+        let sent = 0;
+        while (sent < total) {
+          const n = Math.min(FD_DATA_MAX, total-sent);
+          await sendFDAndWait(fw.slice(sent, sent+n), sent);
+          sent += n;
+          setProgress(Math.floor((sent*100)/total));
+        }
+        await sendFE();
+        await waitForNotify(s => s.includes("fe_ok"), 3000);
+        log("Waiting for BOOT result (up to 30s)...");
+        try {
+          const result = await waitForNotify(
+            s => s.includes("BOOT:OK")||s.includes("BOOT:VERIFY_FAIL")||s.includes("BOOT:ERROR"), 30000);
+          if (result.includes("BOOT:OK")) {
+            setProgress(100);
+            log("Update complete! Device rebooting.");
+          } else if (result.includes("BOOT:VERIFY_FAIL")) {
+            setProgress(100);
+            log("Verify failed (known QSPI cache issue). Power cycle to apply.");
+          } else {
+            log("Update failed: " + result);
+          }
+        } catch(e) {
+          log("ERROR: Timeout waiting for BOOT result: " + e.message);
+          throw e;
+        }
+      }
+
+      // === WAV upload ===
+      async function sendUS(filename) {
+        const nameBytes = new TextEncoder().encode(filename);
+        const p = new Uint8Array(2 + nameBytes.length);
+        p[0]=0x55; p[1]=0x53; p.set(nameBytes, 2);
+        await writePayload(p, { withoutResponse: false });
+      }
+
+      async function sendUD(chunkU8) {
+        const p = new Uint8Array(2 + chunkU8.length);
+        p[0]=0x55; p[1]=0x44; p.set(chunkU8, 2);
+        await writePayload(p, { withoutResponse: true });
+      }
+
+      async function sendUE() {
+        await writePayload(new Uint8Array([0x55,0x45]), { withoutResponse: false });
+      }
+
+      async function uploadWavFileWindowed(file) {
+        const fw    = new Uint8Array(await file.arrayBuffer());
+        const total = fw.length;
+        log(`WAV: ${file.name} (${(total/1024).toFixed(1)} KB)`);
+        wavStatus.textContent = `Uploading: ${file.name}…`;
+        setProgress(0);
+
+        await sendUS(file.name);
+        await waitForNotify(s => s.includes("us_ok"), 4000);
+
+        let resolveUd      = null;
+        let latestConfirmed= 0;
+        const origHandler  = notifyHandler;
+=======
       // === Kommandon ===
 
       // FW_START – skicka med response (väntar på Bluetooth ACK)
@@ -664,20 +1658,204 @@
         let resolveUd = null;
         let latestConfirmed = 0;
         const origHandler = notifyHandler;
+>>>>>>> 5d91662498b9cad5d9aa6a39a7a44f1cf526ff1c
         notifyHandler = (msg) => {
           if (origHandler) origHandler(msg);
           if (msg.startsWith("ud_ok:")) {
             const n = parseInt(msg.slice(6), 10);
             if (n > latestConfirmed) latestConfirmed = n;
+<<<<<<< HEAD
+            if (resolveUd) { resolveUd({ok:true,v:n}); resolveUd=null; }
+          } else if (msg==="ud_busy") {
+            if (resolveUd) { resolveUd({ok:false}); resolveUd=null; }
+=======
             if (resolveUd) { resolveUd({ ok: true, v: n }); resolveUd = null; }
           } else if (msg === "ud_busy") {
             if (resolveUd) { resolveUd({ ok: false }); resolveUd = null; }
+>>>>>>> 5d91662498b9cad5d9aa6a39a7a44f1cf526ff1c
           }
         };
 
         try {
           let sent = 0;
           while (sent < total) {
+<<<<<<< HEAD
+            const n              = Math.min(UD_DATA_MAX, total-sent);
+            const chunk          = fw.slice(sent, sent+n);
+            const expectedOffset = sent + n;
+            let attempt = 0;
+            while (true) {
+              const ackPromise = new Promise((resolve, reject) => {
+                if (latestConfirmed >= expectedOffset) { resolve({ok:true,v:latestConfirmed}); return; }
+                resolveUd = r => resolve(r);
+                const myResolver = resolveUd;
+                setTimeout(() => {
+                  if (resolveUd===myResolver) resolveUd=null;
+                  reject(new Error("ud_ok timeout"));
+                }, 6000);
+              });
+              await sendUD(chunk);
+              const result = await ackPromise;
+              if (result.ok && result.v >= expectedOffset) {
+                sent = expectedOffset;
+                setProgress(Math.floor((sent*100)/total));
+                break;
+              }
+              attempt++;
+              if (attempt > 40) throw new Error("ud_busy: max retries");
+              await sleep(Math.min(5*attempt, 100));
+            }
+          }
+        } finally {
+          resolveUd     = null;
+          notifyHandler = origHandler;
+        }
+
+        await sendUE();
+        await waitForNotify(s => s.includes("ue_ok"), 5000);
+        setProgress(100);
+        wavStatus.textContent = `Uploaded: ${file.name}`;
+        log(`WAV done: ${file.name}`);
+      }
+
+      // === File list ===
+      async function requestFileList() {
+        log("Requesting file list...");
+        fileList.innerHTML = "";
+        fileListEmpty.textContent = "Loading…";
+        fileListEmpty.style.display = "block";
+        await writePayload(new TextEncoder().encode("list_req"), { withoutResponse: false });
+
+        const done = await new Promise((resolve) => {
+          const collected = [];
+          let timer = setTimeout(() => resolve(collected), 5000);
+          const origHandler = notifyHandler;
+          notifyHandler = (msg) => {
+            if (origHandler) origHandler(msg);
+            if (msg.startsWith("L:")) {
+              clearTimeout(timer);
+              if (msg === "L:END") {
+                notifyHandler = origHandler;
+                resolve(collected);
+              } else {
+                const parts = msg.split(":");
+                if (parts.length >= 3) {
+                  collected.push({ idx: parseInt(parts[1],10), name: parts.slice(2).join(":") });
+                }
+                timer = setTimeout(() => { notifyHandler=origHandler; resolve(collected); }, 3000);
+              }
+            }
+          };
+        });
+
+        fileList.innerHTML = "";
+        if (done.length === 0) {
+          fileListEmpty.textContent = "No WAV files found on device.";
+        } else {
+          fileListEmpty.style.display = "none";
+          done.forEach(({idx, name}) => {
+            const li = document.createElement("li");
+            li.dataset.name = name;
+            li.dataset.idx  = idx;
+            li.style.cursor = 'pointer';
+            li.innerHTML = `<span class="fidx">#${idx}</span><span class="fname">${name}</span>`;
+            if (idx === currentSound) li.classList.add('active');
+            li.addEventListener('click', e => {
+              if (!e.target.classList.contains('del-btn')) selectSound(idx, name);
+            });
+            const btn = document.createElement("button");
+            btn.textContent = "Delete";
+            btn.className   = "del-btn";
+            btn.onclick = e => { e.stopPropagation(); deleteFile(name, li); };
+            li.appendChild(btn);
+            fileList.appendChild(li);
+          });
+        }
+        log(`File list: ${done.length} file(s)`);
+      }
+
+      async function deleteFile(name, liElement) {
+        if (!confirm(`Delete "${name}" from device?`)) return;
+        liElement.style.opacity = "0.4";
+        try {
+          await writePayload(new TextEncoder().encode(`del:${name}`), { withoutResponse: false });
+          log(`Deleting: ${name}`);
+          await sleep(600);
+          await requestFileList();
+        } catch(e) {
+          log("ERROR delete: " + e.message);
+          liElement.style.opacity = "1";
+        }
+      }
+
+      // === FS management ===
+      btnCompact.onclick = async () => {
+        fsStatus.textContent = "Compacting… (can take 1–2 min for large filesystems)";
+        btnCompact.disabled = true;
+        btnFormat.disabled  = true;
+        await sendCmd("compact_fs:1");
+        await sleep(10000);
+        fsStatus.textContent = "Compact sent — refreshing. Press Refresh List again if still running.";
+        try { await requestFileList(); } catch {}
+        btnCompact.disabled = false;
+        btnFormat.disabled  = false;
+      };
+
+      btnFormat.onclick = async () => {
+        if (!confirm("⚠️ Format will DELETE ALL FILES on the device.\nThis cannot be undone!")) return;
+        fsStatus.textContent = "Formatting…";
+        btnCompact.disabled = true;
+        btnFormat.disabled  = true;
+        await sendCmd("format_fs:1");
+        await sleep(5000);
+        try { await requestFileList(); } catch {}
+        fsStatus.textContent = "Format complete. All files deleted.";
+        btnCompact.disabled = false;
+        btnFormat.disabled  = false;
+      };
+
+      // === Button handlers ===
+      btnListFiles.onclick = async () => {
+        btnListFiles.disabled = true;
+        try { await requestFileList(); }
+        catch(e) { log("ERROR file list: "+e.message); fileListEmpty.textContent="Error loading file list."; }
+        finally { btnListFiles.disabled = false; }
+      };
+
+      btnWavUpload.onclick = async () => {
+        if (!wavFile.files || wavFile.files.length===0) { log("Select .wav files first."); return; }
+        btnWavUpload.disabled = true;
+        const files = [...wavFile.files];
+        try {
+          for (let i=0; i<files.length; i++) {
+            log(`WAV ${i+1}/${files.length}: ${files[i].name}`);
+            await uploadWavFileWindowed(files[i]);
+            if (i < files.length-1) await sleep(300);
+          }
+          log(`All ${files.length} file(s) uploaded.`);
+          await sleep(500);
+          await requestFileList();
+        } catch(e) {
+          log("ERROR WAV: "+e.message);
+          wavStatus.textContent = `Error: ${e.message}`;
+        } finally { btnWavUpload.disabled = false; }
+      };
+
+      btnUpload.onclick = async () => {
+        if (!fwFile.files || fwFile.files.length===0) { log("Select a .bin file first."); return; }
+        const f = fwFile.files[0];
+        log(`Selected: ${f.name} (${(f.size/1024).toFixed(1)} KB)`);
+        btnUpload.disabled = true;
+        try { await uploadFirmware(await f.arrayBuffer()); }
+        catch(e) { log("ERROR: "+e.message); }
+        finally { btnUpload.disabled = false; }
+      };
+
+      // === BLE connect ===
+      btnConnect.onclick = async () => {
+        try {
+          log("Searching for BLE device...");
+=======
             const n = Math.min(UD_DATA_MAX, total - sent);
             const chunk = fw.slice(sent, sent + n);
             const expectedOffset = sent + n;
@@ -850,11 +2028,36 @@
       btnConnect.onclick = async () => {
         try {
           log("Söker efter BLE-enhet...");
+>>>>>>> 5d91662498b9cad5d9aa6a39a7a44f1cf526ff1c
           device = await navigator.bluetooth.requestDevice({
             filters: [{ services: [SVC_UUID] }],
           });
 
           device.addEventListener("gattserverdisconnected", () => {
+<<<<<<< HEAD
+            log("Disconnected.");
+            bleStatusEl.textContent = "Disconnected";
+            bleStatusEl.className   = "ble-disconnected";
+            btnConnect.disabled    = false;
+            btnDisconnect.disabled = true;
+            btnUpload.disabled     = true;
+            btnWavUpload.disabled  = true;
+            btnListFiles.disabled  = true;
+            btnCompact.disabled    = true;
+            btnFormat.disabled     = true;
+            enableControls(false);
+            lastNotify    = "";
+            notifyHandler = null;
+            bootReady     = false;
+            currentTempo  = null; currentAuto = null;
+            currentSound  = null; currentSoundName = null;
+            elTempo.textContent      = "—";
+            autoLabel.textContent    = "—";
+            btnAuto.className        = "auto-off";
+            soundNameEl.textContent  = "—";
+            for (const w of waiters) {
+              if (!w.done) { w.done=true; w.reject(new Error("BLE disconnected")); }
+=======
             log("Frånkopplad.");
             btnConnect.disabled = false;
             btnDisconnect.disabled = true;
@@ -875,22 +2078,47 @@
                 w.done = true;
                 w.reject(new Error("BLE disconnected"));
               }
+>>>>>>> 5d91662498b9cad5d9aa6a39a7a44f1cf526ff1c
             }
             waiters = [];
           });
 
+<<<<<<< HEAD
+          log("Connecting...");
+          const server = await device.gatt.connect();
+
+          log("Getting service...");
+          const svc = await server.getPrimaryService(SVC_UUID);
+=======
           log("Ansluter...");
           const server = await device.gatt.connect();
 
           log("Hämtar service...");
           const svc = await server.getPrimaryService(SVC_UUID);
 
+>>>>>>> 5d91662498b9cad5d9aa6a39a7a44f1cf526ff1c
           chrRX = await svc.getCharacteristic(RX_UUID);
           chrTX = await svc.getCharacteristic(TX_UUID);
 
           await chrTX.startNotifications();
           chrTX.addEventListener("characteristicvaluechanged", onNotify);
 
+<<<<<<< HEAD
+          bleStatusEl.textContent = "Connected";
+          bleStatusEl.className   = "ble-connected";
+          btnConnect.disabled    = true;
+          btnDisconnect.disabled = false;
+          btnUpload.disabled     = false;
+          btnWavUpload.disabled  = false;
+          btnListFiles.disabled  = false;
+          btnCompact.disabled    = false;
+          btnFormat.disabled     = false;
+          enableControls(true);
+
+          log("Connected!");
+          lastNotify = "";
+          await sendHB();
+=======
           btnConnect.disabled = true;
           btnDisconnect.disabled = false;
           btnUpload.disabled = false;
@@ -902,14 +2130,25 @@
           lastNotify = "";
           await sendHB();
           // Hämta sparad peer MAC i bakgrunden
+>>>>>>> 5d91662498b9cad5d9aa6a39a7a44f1cf526ff1c
           try {
             await sendCmd("get_mac");
             const resp = await waitForNotify(s => s.startsWith("mac:"), 2000);
             const addr = resp.slice(4);
+<<<<<<< HEAD
+            if (addr !== "none") {
+              macInput.value = addr;
+              macStatus.textContent = `Active: ${addr}`;
+            }
+          } catch { /* no MAC saved */ }
+
+        } catch(e) {
+=======
             if (addr !== "none") { macInput.value = addr; macStatus.textContent = `Aktiv: ${addr}`; }
           } catch { /* ingen MAC sparad */ }
 
         } catch (e) {
+>>>>>>> 5d91662498b9cad5d9aa6a39a7a44f1cf526ff1c
           log("ERROR: " + e.message);
         }
       };
@@ -917,6 +2156,9 @@
       btnDisconnect.onclick = async () => {
         try {
           if (device?.gatt?.connected) device.gatt.disconnect();
+<<<<<<< HEAD
+        } catch {}
+=======
         } catch { }
       };
 
@@ -1052,10 +2294,15 @@
         } finally {
           btnWavUpload.disabled = false;
         }
+>>>>>>> 5d91662498b9cad5d9aa6a39a7a44f1cf526ff1c
       };
 
     })();
   </script>
 </body>
 
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> 5d91662498b9cad5d9aa6a39a7a44f1cf526ff1c

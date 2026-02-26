@@ -598,7 +598,7 @@
       <div class="mac-row">
         <button id="btnSetMac">Save</button>
         <button id="btnGetMac">Fetch</button>
-        <button id="btnScanEspnow">Scan</button>
+        <button id="btnScanEspnow">Pair</button>
       </div>
       <div class="muted" id="macStatus" style="margin-top:8px;">No MAC configured.</div>
     </div>
@@ -863,16 +863,16 @@
 
       // === ESP-NOW scan ===
       btnScanEspnow.onclick = async () => {
-        macStatus.textContent = "Scanning… (up to 5s)";
+        macStatus.textContent = "Pairing… (up to 5s)";
         btnScanEspnow.disabled = true;
         await sendCmd("scan_espnow");
         try {
           const resp = await waitForNotify(s => s.startsWith("espnow:"), 5000);
           const found = resp.slice(7);
           macInput.value = found;
-          macStatus.textContent = `Found: ${found} — press Save to use it`;
+          macStatus.textContent = `Found: ${found} — press Save to filter`;
         } catch {
-          macStatus.textContent = "No device found. Make sure the other device is on.";
+          macStatus.textContent = "Not found. Make sure Midi-pedal is on and flashed with new firmware.";
         }
         btnScanEspnow.disabled = false;
       };

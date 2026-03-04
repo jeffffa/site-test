@@ -581,6 +581,7 @@
     <button class="tab-btn active" id="btnTab1" onclick="openTab('tab1')">Control</button>
     <button class="tab-btn" id="btnTab2" onclick="openTab('tab2')">Sound</button>
     <button class="tab-btn" id="btnTab3" onclick="openTab('tab3')">Settings</button>
+    <button class="tab-btn" id="btnTab4" onclick="openTab('tab4')">Update</button>
   </div>
 
   <!-- Tab 1: Control -->
@@ -659,19 +660,6 @@
       <div id="wavStatus" class="muted" style="margin-top:8px;"></div>
     </div>
 
-    <!-- Flash storage management -->
-    <div class="card">
-      <h3>Flash Storage</h3>
-      <div id="fsStatus" class="muted" style="margin-bottom:10px;">
-        Compact: reclaim space from old/failed uploads (keeps all files).<br>
-        Format: erase ALL files permanently.
-      </div>
-      <div style="display:flex;gap:8px;">
-        <button id="btnCompact" disabled style="flex:1;margin:0;">Compact FS</button>
-        <button id="btnFormat"  disabled style="flex:1;margin:0;color:#f88;border-color:#622;">Format FS</button>
-      </div>
-    </div>
-
   </div>
 
   <!-- Tab 3: Settings -->
@@ -686,6 +674,23 @@
       </div>
       <div class="muted" id="macStatus" style="margin-top:8px;">No MAC configured.</div>
     </div>
+
+    <!-- Flash storage management -->
+    <div class="card">
+      <h3>Flash Storage</h3>
+      <div id="fsStatus" class="muted" style="margin-bottom:10px;">
+        Compact: reclaim space from old/failed uploads (keeps all files).<br>
+        Format: erase ALL files permanently.
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button id="btnCompact" disabled style="flex:1;margin:0;">Compact FS</button>
+        <button id="btnFormat"  disabled style="flex:1;margin:0;color:#f88;border-color:#622;">Format FS</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 4: Update -->
+  <div id="tab4" class="tab-content">
     <div class="card" id="fwUpdateCard">
       <h3>Firmware Update</h3>
       <div class="muted" style="margin-bottom:10px;">
@@ -755,7 +760,7 @@
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
       document.getElementById(tabId).classList.add('active');
-      const map = { tab1: 'btnTab1', tab2: 'btnTab2', tab3: 'btnTab3' };
+      const map = { tab1: 'btnTab1', tab2: 'btnTab2', tab3: 'btnTab3', tab4: 'btnTab4' };
       document.getElementById(map[tabId]).classList.add('active');
       document.getElementById('progressBar').style.display = tabId === 'tab1' ? 'none' : 'block';
     }

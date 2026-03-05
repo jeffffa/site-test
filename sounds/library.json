@@ -2,14 +2,149 @@
   "version": 1,
   "sounds": [
     {
-      "name": "Example Stomp 1",
-      "description": "Replace with your own WAV file in /sounds",
-      "file": "example-stomp-1.wav"
+      "name": "808 Kick",
+      "description": "Footloose sound",
+      "file": "808 Kick.wav"
     },
     {
-      "name": "Example Stomp 2",
-      "description": "Replace with your own WAV file in /sounds",
-      "file": "example-stomp-2.wav"
+      "name": "808Snare",
+      "description": "Footloose sound",
+      "file": "808Snare.wav"
+    },
+    {
+      "name": "C Knock1",
+      "description": "Footloose sound",
+      "file": "C Knock1.wav"
+    },
+    {
+      "name": "C Knock2",
+      "description": "Footloose sound",
+      "file": "C Knock2.wav"
+    },
+    {
+      "name": "C Room",
+      "description": "Footloose sound",
+      "file": "C Room.wav"
+    },
+    {
+      "name": "K Ayot",
+      "description": "Footloose sound",
+      "file": "K Ayot.wav"
+    },
+    {
+      "name": "K Bikin1",
+      "description": "Footloose sound",
+      "file": "K Bikin1.wav"
+    },
+    {
+      "name": "K Bikini",
+      "description": "Footloose sound",
+      "file": "K Bikini.wav"
+    },
+    {
+      "name": "K Cuntr2",
+      "description": "Footloose sound",
+      "file": "K Cuntr2.wav"
+    },
+    {
+      "name": "K Cuntry",
+      "description": "Footloose sound",
+      "file": "K Cuntry.wav"
+    },
+    {
+      "name": "K DryA",
+      "description": "Footloose sound",
+      "file": "K DryA.wav"
+    },
+    {
+      "name": "K DryG",
+      "description": "Footloose sound",
+      "file": "K DryG.wav"
+    },
+    {
+      "name": "K DryS",
+      "description": "Footloose sound",
+      "file": "K DryS.wav"
+    },
+    {
+      "name": "K DryY",
+      "description": "Footloose sound",
+      "file": "K DryY.wav"
+    },
+    {
+      "name": "K Grove",
+      "description": "Footloose sound",
+      "file": "K Grove.wav"
+    },
+    {
+      "name": "K Haley",
+      "description": "Footloose sound",
+      "file": "K Haley.wav"
+    },
+    {
+      "name": "K Heavy",
+      "description": "Footloose sound",
+      "file": "K Heavy.wav"
+    },
+    {
+      "name": "K Hist",
+      "description": "Footloose sound",
+      "file": "K Hist.wav"
+    },
+    {
+      "name": "K Nashv",
+      "description": "Footloose sound",
+      "file": "K Nashv.wav"
+    },
+    {
+      "name": "K Vibe",
+      "description": "Footloose sound",
+      "file": "K Vibe.wav"
+    },
+    {
+      "name": "K Zion",
+      "description": "Footloose sound",
+      "file": "K Zion.wav"
+    },
+    {
+      "name": "K-Soft",
+      "description": "Footloose sound",
+      "file": "K-Soft.wav"
+    },
+    {
+      "name": "K-Soft2",
+      "description": "Footloose sound",
+      "file": "K-Soft2.wav"
+    },
+    {
+      "name": "Kick",
+      "description": "Footloose sound",
+      "file": "Kick.wav"
+    },
+    {
+      "name": "Kicktamb",
+      "description": "Footloose sound",
+      "file": "Kicktamb.wav"
+    },
+    {
+      "name": "Rimtamb",
+      "description": "Footloose sound",
+      "file": "Rimtamb.wav"
+    },
+    {
+      "name": "Shake",
+      "description": "Footloose sound",
+      "file": "Shake.wav"
+    },
+    {
+      "name": "Tamb",
+      "description": "Footloose sound",
+      "file": "Tamb.wav"
+    },
+    {
+      "name": "Tambshak",
+      "description": "Footloose sound",
+      "file": "Tambshak.wav"
     }
   ]
 }

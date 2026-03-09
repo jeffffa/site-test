@@ -1,13 +1,24 @@
 {
   "esp32": {
-    "version": "0.1.5",
-    "bin_url": "https://raw.githubusercontent.com/jeffffa/site-test/main/firmware/esp32/esp32-v0.1.5.bin",
-    "release_date": "2026-03-09"
+    "current_version": "0.1.5",
+    "releases": [
+      {
+        "version": "0.1.5",
+        "bin_url": "https://raw.githubusercontent.com/jeffffa/site-test/main/firmware/esp32/esp32-v0.1.5.bin",
+        "release_date": "2026-03-09",
+        "notes": "Control Footloose with Blueetooth and ESP-Now compatible footpedal. With ESP-Now you can control a bluetooth device and Footloose simultaneously."
+      }
+    ]
   },
   "autostomp": {
-    "version": "0.0.1",
-    "bin_url": "https://raw.githubusercontent.com/jeffffa/site-test/main/firmware/autostomp/autostomp-v1.0.1.bin",
-    "release_date": "2026-03-04",
-    "current_version": "1.0.1"
+    "current_version": "1.0.1",
+    "releases": [
+      {
+        "version": "0.0.1",
+        "bin_url": "https://raw.githubusercontent.com/jeffffa/site-test/main/firmware/autostomp/autostomp-v1.0.1.bin",
+        "release_date": "2026-03-04",
+        "notes": "No description available."
+      }
+    ]
   }
 }

@@ -1829,8 +1829,9 @@
           const info = resp.slice(8).split(",");
           const version = info[0] || "unknown";
           const slot = info[1] || "unknown";
+          const ch = info[2] ? "ch" + info[2] : "ch?";
           currentFwVersion = version;
-          fwVersionEl.textContent = "Firmware: " + version + " | Slot: " + slot;
+          fwVersionEl.textContent = "Firmware: " + version + " | Slot: " + slot + " | WiFi " + ch;
           return { version, slot };
         } catch {
           currentFwVersion = "unknown";
@@ -2029,8 +2030,10 @@
         p[2] = totalSize & 0xFF; p[3] = (totalSize >> 8) & 0xFF;
         p[4] = (totalSize >> 16) & 0xFF; p[5] = (totalSize >> 24) & 0xFF;
         await writePayload(p);
-        const resp = await waitForNotify(x => x === "xs_ok" || x.startsWith("xs_err"), 5000);
-        if (resp !== "xs_ok") throw new Error(resp);
+        // Accept both "xs_ok" (old fw) and "xs_ok:N" (fw with MTU reporting).
+        const resp = await waitForNotify(
+          x => x === "xs_ok" || x.startsWith("xs_ok:") || x.startsWith("xs_err"), 5000);
+        if (resp.startsWith("xs_err")) throw new Error(resp);
       }
 
       async function sendXDAndWait(chunk, sentSoFar, maxRetries=30) {
@@ -2077,14 +2080,64 @@
         const fw = new Uint8Array(arrayBuffer);
         if (!fw.length) throw new Error("empty file");
 
-        await sendXS(fw.length);
-        let sent = 0;
-        while (sent < fw.length) {
-          const n = Math.min(XD_DATA_MAX, fw.length - sent);
-          await sendXDAndWait(fw.slice(sent, sent + n), sent);
-          sent += n;
-          setProgress(Math.floor((sent * 100) / fw.length));
+        console.log("[OTA] sendXS, fw.length=", fw.length);
+        try {
+          await sendXS(fw.length);
+        } catch(e) {
+          throw new Error("XS: " + e.message);
         }
+        console.log("[OTA] XS ok, starting XD");
+
+        // 240 = safe for MTU=256. ASTP packet = 248 bytes, max write = 253. 5 bytes margin.
+        // Requires firmware with OTA_PAYLOAD_MAX=512 (setMTU=256 firmware).
+        const xdChunkSize = 240;
+        const MAX_WINDOW = 6;
+        const pending = [];
+        let nextSend = 0;
+
+        async function sendChunk(offset) {
+          const n = Math.min(xdChunkSize, fw.length - offset);
+          const endOffset = offset + n;
+          // Build variable-length ASTP packet directly — makeASTP/writePayload cap
+          // payload at MAX_PAYLOAD=128, which would silently truncate XD chunks > 126 bytes.
+          const payloadLen = n + 2; // "XD" + data
+          const pkt = new Uint8Array(HEADER_SIZE + payloadLen);
+          pkt[0]=0x41; pkt[1]=0x53; pkt[2]=0x54; pkt[3]=0x50;
+          pkt[4] = payloadLen & 0xFF;
+          pkt[5] = (payloadLen >> 8) & 0xFF;
+          pkt[6] = 0x58; pkt[7] = 0x44; // 'X','D'
+          pkt.set(fw.slice(offset, endOffset), HEADER_SIZE + 2);
+          const ackPromise = waitForNotify(
+            x => x === `xd_ok:${endOffset}` || x.startsWith("xd_err"),
+            6000
+          );
+          if (chrRX.writeValueWithoutResponse) {
+            await chrRX.writeValueWithoutResponse(pkt);
+          } else {
+            await chrRX.writeValue(pkt);
+          }
+          pending.push({ endOffset, ackPromise });
+          nextSend = endOffset;
+        }
+
+        while (pending.length < MAX_WINDOW && nextSend < fw.length) {
+          await sendChunk(nextSend);
+        }
+
+        while (pending.length > 0) {
+          const { endOffset, ackPromise } = pending.shift();
+          let resp;
+          try {
+            resp = await ackPromise;
+          } catch(e) {
+            throw new Error(`XD@${endOffset}: ${e.message}`);
+          }
+          if (resp.startsWith("xd_err")) throw new Error(resp);
+          setProgress(Math.floor((endOffset * 100) / fw.length));
+          if (nextSend < fw.length) await sendChunk(nextSend);
+        }
+
+        console.log("[OTA] all XD done, sendXE");
         await sendXE();
         setProgress(100);
       }
@@ -2132,6 +2185,13 @@
         if (!txt.startsWith("hb_ok")) log("NOTIFY: " + txt);
         if (notifyHandler) notifyHandler(txt);
         if (txt.startsWith("status ")) parseStatus(txt);
+
+        // ESP-NOW pairing — dubbelriktad discovery (Autostomp-scan + MIDI-controller-scan)
+        if (txt.startsWith("espnow:") && !txt.startsWith("espnow_")) {
+          const mac = txt.slice(7);
+          macInput.value = mac;
+          macStatus.textContent = `Found: ${mac} — press Save to filter`;
+        }
 
         // BT MIDI central status notifications
         if (txt === "bt_midi_scanning") {

@@ -690,6 +690,13 @@
       text-overflow: ellipsis;
     }
 
+    .sound-already-on-device {
+      font-size: 0.8em;
+      font-weight: 400;
+      color: #666;
+      margin-left: 5px;
+    }
+
     .sound-library-desc {
       margin-top: 2px;
       font-size: 0.78em;
@@ -879,6 +886,7 @@
         <h3>WAV Files on Device</h3>
         <div id="fileListEmpty" class="muted">Connect to load file list.</div>
         <ul id="fileList"></ul>
+        <div id="storageStatus" class="muted" style="margin-top:10px;font-size:0.85em;"></div>
       </div>
 
       <div class="card" id="soundLibraryCard">
@@ -1098,6 +1106,7 @@
       const btnCompact   = document.getElementById("btnCompact");
       const btnFormat    = document.getElementById("btnFormat");
       const fsStatus     = document.getElementById("fsStatus");
+      const storageStatus= document.getElementById("storageStatus");
       const fwVersionEl  = document.getElementById("fwVersion");
       const fwUpdateCard = document.getElementById("fwUpdateCard");
       const espOtaCard = document.getElementById("espOtaCard");
@@ -1157,6 +1166,7 @@
       let espReleaseOptions = [];
       let fwReleaseOptions = [];
       let soundLibraryItems = [];
+      let deviceFiles = []; // {idx, name} — uppdateras vid varje requestFileList
       let soundPreviewAudio = null;
       let activePreviewUrl = null;
       let isWavUploadBusy = false;
@@ -1495,7 +1505,18 @@
 
           const name = document.createElement("div");
           name.className = "sound-library-name";
-          name.textContent = item.label;
+          const labelSpan = document.createElement("span");
+          labelSpan.textContent = item.label;
+          name.appendChild(labelSpan);
+          const deviceMatch = deviceFiles.find(f =>
+            f.name.toLowerCase() === item.fileName.toLowerCase()
+          );
+          if (deviceMatch) {
+            const alreadySpan = document.createElement("span");
+            alreadySpan.className = "sound-already-on-device";
+            alreadySpan.textContent = "— Already in Footloose";
+            name.appendChild(alreadySpan);
+          }
 
           const desc = document.createElement("div");
           desc.className = "sound-library-desc";
@@ -1566,6 +1587,7 @@
         }
 
         isWavUploadBusy = true;
+        enableControls(false);
         updateLibraryImportButtons();
         btnWavUpload.disabled = true;
 
@@ -1582,6 +1604,7 @@
           setSoundLibraryStatus(`Import failed: ${e.message}`);
         } finally {
           isWavUploadBusy = false;
+          enableControls(isDeviceConnected());
           btnWavUpload.disabled = !isDeviceConnected();
           updateLibraryImportButtons();
         }
@@ -2495,7 +2518,23 @@
             if (origHandler) origHandler(msg);
             if (msg.startsWith("L:")) {
               clearTimeout(timer);
-              if (msg === "L:END") {
+              if (msg.startsWith("L:END")) {
+                const endParts = msg.split(":");
+                if (endParts.length >= 4) {
+                  const freeKB  = parseInt(endParts[2], 10);
+                  const totalKB = parseInt(endParts[3], 10);
+                  const usedKB  = totalKB - freeKB;
+                  const pct     = totalKB > 0 ? Math.round(usedKB / totalKB * 100) : 0;
+                  const storageText = `Storage: ${(usedKB/1024).toFixed(1)} MB used of ${(totalKB/1024).toFixed(1)} MB (${pct}%)`;
+                  storageStatus.innerHTML =
+                    `${storageText}<br>` +
+                    `<progress style="width:100%;margin:4px 0 2px;" value="${usedKB}" max="${totalKB}"></progress>`;
+                  fsStatus.innerHTML =
+                    `${storageText}<br>` +
+                    `<progress style="width:100%;margin:4px 0 6px;" value="${usedKB}" max="${totalKB}"></progress><br>` +
+                    `Compact: reclaim space from old/failed uploads (keeps all files).<br>` +
+                    `Format: erase ALL files permanently.`;
+                }
                 notifyHandler = origHandler;
                 resolve(collected);
               } else {
@@ -2532,6 +2571,8 @@
             fileList.appendChild(li);
           });
         }
+        deviceFiles = done;
+        renderSoundLibrary();
         log(`File list: ${done.length} file(s)`);
       }
 
@@ -2542,6 +2583,20 @@
           await writePayload(new TextEncoder().encode(`del:${name}`), { withoutResponse: false });
           log(`Deleting: ${name}`);
           await sleep(600);
+          storageStatus.textContent = "Reclaiming space…";
+          await sendCmd("compact_fs:1");
+          await new Promise(resolve => {
+            const timeout = setTimeout(resolve, 15000);
+            const origHandler = notifyHandler;
+            notifyHandler = (msg) => {
+              if (origHandler) origHandler(msg);
+              if (msg === "compact_ok") {
+                clearTimeout(timeout);
+                notifyHandler = origHandler;
+                resolve();
+              }
+            };
+          });
           await requestFileList();
         } catch(e) {
           log("ERROR delete: " + e.message);
@@ -2555,8 +2610,18 @@
         btnCompact.disabled = true;
         btnFormat.disabled  = true;
         await sendCmd("compact_fs:1");
-        await sleep(10000);
-        fsStatus.textContent = "Compact sent — refreshing. Press Refresh List again if still running.";
+        await new Promise(resolve => {
+          const timeout = setTimeout(resolve, 120000);
+          const origHandler = notifyHandler;
+          notifyHandler = (msg) => {
+            if (origHandler) origHandler(msg);
+            if (msg === "compact_ok") {
+              clearTimeout(timeout);
+              notifyHandler = origHandler;
+              resolve();
+            }
+          };
+        });
         try { await requestFileList(); } catch {}
         btnCompact.disabled = false;
         btnFormat.disabled  = false;
@@ -2581,6 +2646,7 @@
         if (!wavFile.files || wavFile.files.length===0) { log("Select .wav files first."); return; }
         if (isWavUploadBusy) { setSoundLibraryStatus("Upload already in progress."); return; }
         isWavUploadBusy = true;
+        enableControls(false);
         updateLibraryImportButtons();
         btnWavUpload.disabled = true;
         const files = [...wavFile.files];
@@ -2598,6 +2664,7 @@
           wavStatus.textContent = `Error: ${e.message}`;
         } finally {
           isWavUploadBusy = false;
+          enableControls(isDeviceConnected());
           btnWavUpload.disabled = !isDeviceConnected();
           updateLibraryImportButtons();
         }

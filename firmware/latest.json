@@ -1,6 +1,6 @@
 {
   "esp32": {
-    "current_version": "0.1.7",
+    "current_version": "0.2.6",
     "releases": [
       {
         "version": "0.1.2",
@@ -31,6 +31,12 @@
         "bin_url": "https://raw.githubusercontent.com/jeffffa/Autostomp-web/main/firmware/esp32/esp32-v0.1.7.bin",
         "release_date": "2026-04-21",
         "notes": "Bug fixes. Fixed an issue where sounds could not be added to the pedal when using ESP-NOW."
+      },
+      {
+        "version": "0.2.6",
+        "bin_url": "https://raw.githubusercontent.com/jeffffa/Autostomp-web/main/firmware/esp32/esp32-v0.2.6.bin",
+        "release_date": "2026-04-28",
+        "notes": "Fixes ESP32 OTA update ACK timing and keeps compatibility with devices already running the previous OTA build."
       }
     ]
   },

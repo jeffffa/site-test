@@ -1179,8 +1179,9 @@
       function parseVersionParts(v) {
         if (!v) return null;
         const clean = String(v).trim().replace(/^v/i, "").split("-")[0];
-        if (!/^\d+(\.\d+){0,2}$/.test(clean)) return null;
-        const parts = clean.split(".").map(n => parseInt(n, 10));
+        const match = clean.match(/\d+(?:\.\d+){0,2}/);
+        if (!match) return null;
+        const parts = match[0].split(".").map(n => parseInt(n, 10));
         while (parts.length < 3) parts.push(0);
         return parts.slice(0, 3);
       }
@@ -2094,8 +2095,8 @@
         const p = new Uint8Array(2);
         p[0] = 'X'.charCodeAt(0); p[1] = 'E'.charCodeAt(0);
         await writePayload(p);
-        const resp = await waitForNotify(x => x === "xe_ok" || x.startsWith("xe_err"), 10000);
-        if (resp !== "xe_ok") throw new Error(resp);
+        const resp = await waitForNotify(x => x.startsWith("xe_ok") || x.startsWith("xe_err"), 10000);
+        if (!resp.startsWith("xe_ok")) throw new Error(resp);
       }
 
       async function uploadEsp32Ota(arrayBuffer) {
@@ -2114,7 +2115,11 @@
         // fw < 0.1.6:  MTU=185, MAX_PAYLOAD=128  → max 126-byte chunks (ASTP=134, max=182).
         const newFw = compareSemver(currentFwVersion, "0.1.6") >= 0;
         const xdChunkSize = newFw ? 380 : 126;
-        const MAX_WINDOW = newFw ? 10 : 6;
+        // Firmware 0.2.5 ACKs only every 64 chunks. Use a larger bootstrap
+        // window so devices already on that build can still update away from it.
+        const needsWideAckWindow = compareSemver(currentFwVersion, "0.2.5") >= 0 &&
+                                   compareSemver(currentFwVersion, "0.2.6") < 0;
+        const MAX_WINDOW = needsWideAckWindow ? 64 : (newFw ? 10 : 6);
         const pending = [];
         let nextSend = 0;
 
@@ -2131,7 +2136,7 @@
           pkt[6] = 0x58; pkt[7] = 0x44; // 'X','D'
           pkt.set(fw.slice(offset, endOffset), HEADER_SIZE + 2);
           const ackPromise = waitForNotify(
-            x => x === `xd_ok:${endOffset}` || x.startsWith("xd_err"),
+            x => (x.startsWith("xd_ok:") && parseInt(x.slice(6), 10) >= endOffset) || x.startsWith("xd_err"),
             6000
           );
           if (chrRX.writeValueWithoutResponse) {

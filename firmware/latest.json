@@ -1,6 +1,6 @@
 {
   "esp32": {
-    "current_version": "0.2.8",
+    "current_version": "0.2.9",
     "releases": [
       {
         "version": "0.1.2",
@@ -49,6 +49,12 @@
         "bin_url": "https://raw.githubusercontent.com/jeffffa/Autostomp-web/main/firmware/esp32/esp32-v0.2.8.bin",
         "release_date": "2026-04-29",
         "notes": "Adds cumulative ESP32 runtime tracking for diagnostics and telemetry."
+      },
+      {
+        "version": "0.2.9",
+        "bin_url": "https://raw.githubusercontent.com/jeffffa/site-test/main/firmware/esp32/esp32-v0.2.9.bin",
+        "release_date": "2026-04-29",
+        "notes": "Adds ESP32 reset reason reporting for diagnostics and expanded app telemetry."
       }
     ]
   },

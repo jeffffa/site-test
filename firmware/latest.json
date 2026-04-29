@@ -65,7 +65,7 @@
     ]
   },
   "autostomp": {
-    "current_version": "1.0.3",
+    "current_version": "1.0.2",
     "releases": [
       {
         "version": "0.0.1",
@@ -90,12 +90,6 @@
         "bin_url": "https://raw.githubusercontent.com/jeffffa/Autostomp-web/main/firmware/autostomp/AutoStomp-v1.0.2.bin",
         "release_date": "2026-04-21",
         "notes": "Update for the new piezo preamp."
-      },
-      {
-        "version": "1.0.3",
-        "bin_url": "https://raw.githubusercontent.com/jeffffa/site-test/main/firmware/autostomp/AutoStomp-v1.0.3.bin",
-        "release_date": "2026-04-29",
-        "notes": "Adds pedal stomp telemetry events so the app can count physical stomps separately from app stomps."
       }
     ]
   }

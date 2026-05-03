@@ -1,6 +1,6 @@
 {
   "esp32": {
-    "current_version": "0.2.11",
+    "current_version": "0.2.12",
     "releases": [
       {
         "version": "0.1.2",
@@ -67,6 +67,12 @@
         "bin_url": "https://raw.githubusercontent.com/jeffffa/site-test/main/firmware/esp32/esp32-v0.2.11.bin",
         "release_date": "2026-04-29",
         "notes": "Adds an immediate battery status request so the app can refresh battery data as soon as it connects."
+      },
+      {
+        "version": "0.2.12",
+        "bin_url": "https://raw.githubusercontent.com/jeffffa/site-test/main/firmware/esp32/esp32-v0.2.12.bin",
+        "release_date": "2026-05-03",
+        "notes": "Stores completed battery sessions on the ESP32 and lets the app sync the backlog to Firebase later."
       }
     ]
   },

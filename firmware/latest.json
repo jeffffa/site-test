@@ -1,6 +1,6 @@
 {
   "esp32": {
-    "current_version": "0.2.18",
+    "current_version": "0.2.19",
     "releases": [
       {
         "version": "0.1.2",
@@ -109,6 +109,12 @@
         "bin_url": "https://raw.githubusercontent.com/jeffffa/autostomp-assets/main/firmware/esp32/esp32-v0.2.18.bin",
         "release_date": "2026-05-03",
         "notes": "Sends ESP32 battery voltage, percentage, and charge status to Daisy over SPI so the pedal display can use the ESP32 battery measurement."
+      },
+      {
+        "version": "0.2.19",
+        "bin_url": "https://raw.githubusercontent.com/jeffffa/autostomp-assets/main/firmware/esp32/esp32-v0.2.19.bin",
+        "release_date": "2026-05-03",
+        "notes": "Reduces release-mode serial logging in the BLE/SPI data path so the app stays responsive just after connecting."
       }
     ]
   },

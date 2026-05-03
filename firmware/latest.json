@@ -1,6 +1,6 @@
 {
   "esp32": {
-    "current_version": "0.2.22",
+    "current_version": "0.2.23",
     "releases": [
       {
         "version": "0.1.2",
@@ -133,6 +133,12 @@
         "bin_url": "https://raw.githubusercontent.com/jeffffa/autostomp-assets/main/firmware/esp32/esp32-v0.2.22.bin",
         "release_date": "2026-05-03",
         "notes": "Calibrates battery percentage to the measured hardware: 2.68 V ADC = 8.235 V (100%), giving accurate charge readings in the app and on the pedal display."
+      },
+      {
+        "version": "0.2.23",
+        "bin_url": "https://raw.githubusercontent.com/jeffffa/autostomp-assets/main/firmware/esp32/esp32-v0.2.23.bin",
+        "release_date": "2026-05-03",
+        "notes": "Adds DC adapter voltage detection on GPIO4 (9/12/18/24 V), near-instant BLE updates when adapter or charger state changes, accurate adapter plug-in counting, and recalibrated battery voltage (2.56 V ADC = 8.3 V, 8.0 V = 100%)."
       }
     ]
   },
